@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   const cleanQuery = query.trim();
   const results = [];
   
-  // Sunucu isteklerinin engellenmemesi için tarayıcı kimliği
   const fetchHeaders = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
   };
@@ -63,31 +62,49 @@ export default async function handler(req, res) {
   // 3. Kullanıcı Adı Sorgusu
   if (type === 'username') {
     
-    // --- KONTROLSÜZ EKLENENLER (Her zaman görünür) ---
+    // Instagram (İstatistik: Gizli Profil / API Kısıtlamalı)
     results.push({
       platform: 'Instagram',
       url: `https://www.instagram.com/${cleanQuery}/`,
       icon: 'fa-brands fa-instagram',
       displayName: cleanQuery,
-      stats: 'Profil Linki',
+      stats: 'Takipçi: Profilde Görünür',
       lastActive: 'Kontrol Et',
       email: 'Gizli',
       phone: 'Gizli'
     });
 
+    // YouTube
     results.push({
       platform: 'YouTube',
       url: `https://www.youtube.com/@${cleanQuery}`,
       icon: 'fa-brands fa-youtube',
       displayName: cleanQuery,
-      stats: 'Kanal Linki',
+      stats: 'Abone: Kanalda Görünür',
       lastActive: 'Kanala Git',
       email: 'Gizli',
       phone: 'Gizli'
     });
-    // --------------------------------------------------
 
-    // NGL (Gizli Soru Uygulaması) - Canlı Kontrol
+    // GitHub (CANLI TAKİPÇİ VE REPO SAYISI)
+    try {
+      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        results.push({
+          platform: 'GitHub',
+          url: ghData.html_url,
+          icon: 'fa-brands fa-github',
+          displayName: ghData.name || ghData.login,
+          stats: `Takipçi: ${ghData.followers} • Repo: ${ghData.public_repos}`,
+          lastActive: 'Profili İncele',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // NGL - Canlı Kontrol
     try {
       const nglRes = await fetch(`https://ngl.link/${cleanQuery}`, { headers: fetchHeaders });
       if (nglRes.ok) {
@@ -96,7 +113,7 @@ export default async function handler(req, res) {
           url: `https://ngl.link/${cleanQuery}`,
           icon: 'fa-solid fa-link', 
           displayName: cleanQuery,
-          stats: 'Soru Sayfası Bulundu',
+          stats: 'Soru Sayfası Aktif',
           lastActive: 'Soru Sor',
           email: 'Gizli',
           phone: 'Gizli'
@@ -130,26 +147,8 @@ export default async function handler(req, res) {
           url: `https://www.tiktok.com/@${cleanQuery}`,
           icon: 'fa-brands fa-tiktok',
           displayName: cleanQuery,
-          stats: 'Profil Olabilir',
+          stats: 'Takipçi: Profilde Görünür',
           lastActive: 'Kontrol Et',
-          email: 'Gizli',
-          phone: 'Gizli'
-        });
-      }
-    } catch (e) {}
-
-    // GitHub - Canlı Kontrol
-    try {
-      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
-      if (ghRes.ok) {
-        const ghData = await ghRes.json();
-        results.push({
-          platform: 'GitHub',
-          url: ghData.html_url,
-          icon: 'fa-brands fa-github',
-          displayName: ghData.name || ghData.login,
-          stats: `${ghData.public_repos} Repo`,
-          lastActive: 'Profili İncele',
           email: 'Gizli',
           phone: 'Gizli'
         });
@@ -157,6 +156,5 @@ export default async function handler(req, res) {
     } catch (e) {}
   }
 
-  // Sonuçları döndür
   res.status(200).json(results);
 }
