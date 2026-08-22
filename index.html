@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT - Kullanıcı Arama</title>
+    <style>
+        body { background-color: #121212; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+        input { padding: 10px; width: 80%; max-width: 300px; border-radius: 5px; border: none; outline: none; margin-bottom: 10px; background: #222; color: #fff; }
+        button { padding: 10px 20px; background-color: #00ffcc; color: #000; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
+        #results { margin-top: 20px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .card { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid red; }
+        .found { border-left-color: #00ffcc; }
+        a { color: #00ffcc; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <h2>Dijital Ayak İzi Tarayıcı</h2>
+    <input type="text" id="username" placeholder="Kullanıcı adı girin...">
+    <br>
+    <button onclick="searchUser()">Ara</button>
+
+    <div id="results"></div>
+
+    <script>
+        async function searchUser() {
+            const username = document.getElementById('username').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if(!username) return alert("Kullanıcı adı boş olamaz!");
+            
+            resultsDiv.innerHTML = "<p>Aranıyor... Lütfen bekleyin.</p>";
+
+            try {
+                const response = await fetch(`/api/search?username=${username}`);
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = "";
+                
+                data.forEach(site => {
+                    const status = site.found ? "<span style='color:#00ffcc;'>Bulundu</span>" : "<span style='color:red;'>Yok</span>";
+                    const link = site.found ? `<br><a href="${site.url}" target="_blank">Profile Git ↗</a>` : "";
+                    
+                    resultsDiv.innerHTML += `
+                        <div class="card ${site.found ? 'found' : ''}">
+                            <strong>${site.platform}</strong>: ${status} ${link}
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                resultsDiv.innerHTML = "<p style='color:red;'>Bir hata oluştu.</p>";
+            }
+        }
+    </script>
+
+</body>
+</html>
