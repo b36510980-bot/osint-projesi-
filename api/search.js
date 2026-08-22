@@ -13,22 +13,21 @@ export default async function handler(req, res) {
         url: `https://en.gravatar.com/${query}`,
         icon: 'fa-solid fa-envelope-circle-check',
         displayName: query,
-        stats: 'E-posta Veritabanı Taraması',
-        lastActive: 'Kayıt Sorgulandı',
+        stats: 'E-posta Kontrolü',
+        lastActive: 'Manuel Sorgu Linki',
         email: query,
         phone: 'Gizli / Paylaşılmamış'
       }
     ]);
   }
 
-  // Telefon sorgusu (Gerçekçi numara kontrolü ve bağlı servisler)
+  // Telefon sorgusu (Doğrudan uygulama kontrol linkleri üretir)
   if (type === 'phone') {
     const cleanPhone = query.replace(/\s+/g, '');
-    // En az 10 haneli ve rakamlardan oluşan gerçekçi bir telefon formatı kontrolü
     const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
 
     if (!isValidPhone) {
-      return res.status(200).json([]); // Geçersiz veya rastgele metinse sonuç döndürmez
+      return res.status(200).json([]);
     }
 
     return res.status(200).json([
@@ -37,8 +36,8 @@ export default async function handler(req, res) {
         url: `https://wa.me/${cleanPhone.replace('+', '')}`,
         icon: 'fa-brands fa-whatsapp',
         displayName: cleanPhone,
-        stats: 'Aktif Hat Eşleşmesi',
-        lastActive: 'Çevrimiçi / Profil Bulundu',
+        stats: 'Hızlı Bağlantı',
+        lastActive: 'Tıklayıp Sohbeti Başlat',
         email: 'Gizli / Paylaşılmamış',
         phone: cleanPhone
       },
@@ -47,32 +46,32 @@ export default async function handler(req, res) {
         url: `https://t.me/+${cleanPhone.replace('+', '')}`,
         icon: 'fa-brands fa-telegram',
         displayName: cleanPhone,
-        stats: 'Kayıtlı Kullanıcı',
-        lastActive: 'Bulundu',
+        stats: 'Hızlı Bağlantı',
+        lastActive: 'Tıklayıp Kontrol Et',
         email: 'Gizli / Paylaşılmamış',
         phone: cleanPhone
       },
       {
-        platform: 'Rehber / Truecaller',
+        platform: 'Truecaller',
         url: `https://www.truecaller.com/search/tr/${cleanPhone.replace('+', '')}`,
         icon: 'fa-solid fa-address-book',
         displayName: cleanPhone,
-        stats: 'Numara Kayıt Analizi',
-        lastActive: 'Doğrulandı',
+        stats: 'Rehber Analizi',
+        lastActive: 'Web Üzerinden Sorgula',
         email: 'Gizli / Paylaşılmamış',
         phone: cleanPhone
       }
     ]);
   }
 
-  // Kullanıcı adı sorgusu (Instagram, Snapchat ve diğerleri dahil)
+  // Kullanıcı adı sorgusu
   const platforms = [
-    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Aktif', lastActive: 'Son 24 saat', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
-    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Aktif', lastActive: 'Bilinmiyor', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
-    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Hikaye Erişimi Açık', lastActive: 'Bilinmiyor', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
-    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları Bulundu', lastActive: 'Bilinmiyor', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
-    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Panolar Listeleniyor', lastActive: 'Bilinmiyor', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
-    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Erişilebilir', lastActive: 'Bilinmiyor', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' }
+    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
+    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
+    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
+    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
+    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' },
+    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli / Paylaşılmamış', phone: 'Gizli / Paylaşılmamış' }
   ];
 
   res.status(200).json(platforms);
