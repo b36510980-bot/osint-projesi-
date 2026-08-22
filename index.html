@@ -298,8 +298,8 @@
             currentMode = mode;
             
             const input = document.getElementById('queryInput');
-            input.value = ''; // Sekme değiştiğinde kutuyu sıfırla
-            document.getElementById('results').innerHTML = ''; // Eski sonuçları temizle
+            input.value = '';
+            document.getElementById('results').innerHTML = '';
 
             if (mode === 'username') {
                 input.placeholder = "Kullanıcı adı girin (@sız)...";
@@ -320,7 +320,7 @@
             'WhatsApp': { color: '#25D366', bg: '#25D366' },
             'Telegram': { color: '#229ED9', bg: '#229ED9' },
             'Truecaller': { color: '#38bdf8', bg: '#1d4ed8' },
-            'Gravatar / E-posta Kaydı': { color: '#00f3ff', bg: '#1d4ed8' }
+            'Gravatar / E-posta Profili': { color: '#00f3ff', bg: '#1d4ed8' }
         };
 
         async function searchProfiles() {
@@ -384,7 +384,10 @@
                             <div class="extra-fields" id="extra-${index}">
                                 <div class="extra-field-item"><span>E-posta:</span> <b style="color: #00f3ff;">${item.email}</b></div>
                                 <div class="extra-field-item"><span>Telefon:</span> <b style="color: #00f3ff;">${item.phone}</b></div>
-                                <div class="extra-field-item"><span>Güvenlik Durumu:</span> <span style="color: #10b981;">Erişilebilir</span></div>
+                                <div class="extra-field-item"><span>Uyruk:</span> <b style="color: #00f3ff;">${item.nationality}</b></div>
+                                <div class="extra-field-item"><span>İl / Bölge:</span> <b style="color: #00f3ff;">${item.city}</b></div>
+                                <div class="extra-field-item"><span>Yaşadığı Yer:</span> <b style="color: #00f3ff;">${item.residence}</b></div>
+                                <div class="extra-field-item"><span>Memleket:</span> <b style="color: #00f3ff;">${item.hometown}</b></div>
                             </div>
                         </div>
                     `;
