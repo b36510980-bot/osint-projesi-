@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT // Clean Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>OSINT // Cyber OSINT Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
         body {
-            background-color: #0b0f19;
-            color: #e5e7eb;
+            background-color: #030712;
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #030712 70%);
+            color: #f3f4f6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -21,106 +22,134 @@
 
         .header {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #1f2937;
-            margin-bottom: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+            margin-bottom: 25px;
         }
 
         .logo {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 700;
-            color: #9ca3af;
+            color: #00f3ff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .search-tabs {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 15px;
         }
 
         .tab-btn {
             flex: 1;
-            background-color: #111827;
-            border: 1px solid #1f2937;
+            background-color: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #9ca3af;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
 
-        .tab-btn:hover { border-color: #374151; color: #fff; }
-        .tab-btn.active { background-color: #1f2937; border-color: #4b5563; color: #fff; font-weight: 600; }
+        .tab-btn:hover {
+            border-color: rgba(0, 243, 255, 0.4);
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00f3ff, #b026ff);
+            border-color: transparent;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
 
         .search-box {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
         .search-box input {
             flex: 1;
-            padding: 12px 16px;
-            background-color: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 8px;
+            padding: 15px 20px;
+            background-color: rgba(11, 15, 25, 0.9);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 14px;
             color: #fff;
-            font-size: 15px;
+            font-size: 16px;
             font-family: 'JetBrains Mono', monospace;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .search-box input:focus { border-color: #4b5563; }
+        .search-box input:focus {
+            border-color: #00f3ff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 2px 4px rgba(0,0,0,0.5);
+        }
 
         .search-box button {
-            padding: 0 20px;
-            background-color: #374151;
-            color: #fff;
+            padding: 0 25px;
+            background: linear-gradient(135deg, #00f3ff, #b026ff);
+            color: #000;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 14px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 16px;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(176, 38, 255, 0.4);
         }
 
-        .search-box button:hover { background-color: #4b5563; }
+        .search-box button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.6);
+        }
 
         .results-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .card {
-            background-color: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 18px;
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);
+            transform: translateY(-2px);
         }
 
         .card-top {
@@ -134,69 +163,110 @@
             align-items: center;
             gap: 8px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             font-family: 'JetBrains Mono', monospace;
-            color: #e5e7eb;
         }
-
-        /* Platforma özel gerçek marka renkleri */
-        .fa-github { color: #ffffff; }
-        .fa-youtube { color: #FF0000; }
-        .fa-whatsapp { color: #25D366; }
-        .fa-envelope-circle-check { color: #1e8cbe; }
 
         .profile-main {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            align-items: center;
+            gap: 15px;
         }
 
-        .profile-name { font-size: 16px; font-weight: 600; color: #fff; }
-        .profile-handle { font-size: 13px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
-        .profile-bio { font-size: 13px; color: #d1d5db; margin-top: 4px; }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 18px; font-weight: 700; color: #fff; font-family: 'JetBrains Mono', monospace; }
+        .profile-handle { font-size: 13px; color: #9ca3af; margin-top: 3px; }
 
         .stats-row {
-            font-size: 12px;
+            font-size: 13px;
             color: #9ca3af;
             display: flex;
-            gap: 12px;
-            border-top: 1px solid #1f2937;
-            padding-top: 10px;
+            gap: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 12px;
         }
 
+        .date-row { font-size: 12px; color: #6b7280; font-family: 'JetBrains Mono', monospace; }
+
+        .accordion-btn {
+            background: none;
+            border: none;
+            color: #00f3ff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-top: 5px;
+        }
+
+        .extra-fields {
+            display: none;
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .extra-field-item { display: flex; justify-content: space-between; color: #d1d5db; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+        .extra-field-item span:first-child { color: #9ca3af; }
+
         .visit-btn {
-            background-color: #1f2937;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
+            background: rgba(0, 243, 255, 0.1);
+            color: #00f3ff;
+            padding: 8px 16px;
+            border-radius: 10px;
             text-decoration: none;
-            font-size: 11px;
-            font-weight: 500;
-            border: 1px solid #374151;
-            transition: background-color 0.2s;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            transition: all 0.2s;
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .visit-btn:hover { background-color: #374151; }
+        .visit-btn:hover {
+            background: #00f3ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+        }
 
         .loader {
             display: none;
             text-align: center;
-            color: #9ca3af;
-            margin: 30px 0;
-            font-size: 14px;
+            color: #00f3ff;
+            margin: 40px 0;
+            font-size: 15px;
             font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
         }
         
-        .loader i { animation: spin 1s linear infinite; margin-right: 6px; }
+        .loader i { animation: spin 1s linear infinite; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="logo"><i class="fa-solid fa-shield-halved"></i> osint // verified records</div>
+        <div class="logo"><i class="fa-solid fa-terminal" style="color: #b026ff;"></i> osint // v2.0</div>
     </div>
 
     <div class="search-tabs">
@@ -216,7 +286,7 @@
         <button onclick="searchProfiles()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Canlı sorgu yapılıyor...</div>
+    <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Veritabanı taranıyor...</div>
     <div id="results" class="results-container"></div>
 
     <script>
@@ -228,8 +298,8 @@
             currentMode = mode;
             
             const input = document.getElementById('queryInput');
-            input.value = '';
-            document.getElementById('results').innerHTML = '';
+            input.value = ''; // Sekme değiştiğinde kutuyu sıfırla
+            document.getElementById('results').innerHTML = ''; // Eski sonuçları temizle
 
             if (mode === 'username') {
                 input.placeholder = "Kullanıcı adı girin (@sız)...";
@@ -239,6 +309,19 @@
                 input.placeholder = "Telefon numarası (+905XXXXXXXXX)...";
             }
         }
+
+        const brandStyles = {
+            'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
+            'TikTok': { color: '#00f3ff', bg: '#000000' },
+            'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
+            'GitHub': { color: '#ffffff', bg: '#1f2937' },
+            'Pinterest': { color: '#E60023', bg: '#E60023' },
+            'Twitter / X': { color: '#00f3ff', bg: '#000000' },
+            'WhatsApp': { color: '#25D366', bg: '#25D366' },
+            'Telegram': { color: '#229ED9', bg: '#229ED9' },
+            'Truecaller': { color: '#38bdf8', bg: '#1d4ed8' },
+            'Gravatar / E-posta Kaydı': { color: '#00f3ff', bg: '#1d4ed8' }
+        };
 
         async function searchProfiles() {
             const query = document.getElementById('queryInput').value.trim();
@@ -260,29 +343,49 @@
                 loader.style.display = 'none';
 
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px; font-family: JetBrains Mono;">Doğrulanmış canlı kayıt bulunamadı.</div>';
+                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px; font-family: JetBrains Mono;">Kayıt bulunamadı veya geçersiz format.</div>';
                     return;
                 }
 
-                data.forEach((item) => {
+                data.forEach((item, index) => {
+                    const style = brandStyles[item.platform] || { color: '#00f3ff', bg: '#111827' };
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
                         <div class="card-top">
-                            <div class="platform-badge">
+                            <div class="platform-badge" style="color: ${style.color};">
                                 <i class="${item.icon}"></i> ${item.platform}
                             </div>
-                            <a href="${item.url}" target="_blank" class="visit-btn">Aç <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px;"></i></a>
+                            <a href="${item.url}" target="_blank" class="visit-btn">Aç // Git <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></a>
                         </div>
                         
                         <div class="profile-main">
-                            <div class="profile-name">${item.displayName}</div>
-                            <div class="profile-handle">@${query}</div>
-                            <div class="profile-bio">${item.bio}</div>
+                            <div class="avatar" style="background: ${style.bg}; color: ${item.platform === 'Snapchat' ? '#000' : '#fff'};">
+                                <i class="${item.icon}"></i>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-name">${item.displayName}</div>
+                                <div class="profile-handle">Hedef: ${query}</div>
+                            </div>
                         </div>
 
                         <div class="stats-row">
-                            <span><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ${item.stats}</span>
+                            <span><i class="fa-solid fa-shield-halved" style="color:#00f3ff;"></i> ${item.stats}</span>
+                        </div>
+
+                        <div class="date-row">
+                            <div>Durum: ${item.lastActive}</div>
+                        </div>
+
+                        <div>
+                            <button class="accordion-btn" onclick="toggleExtra(${index})">
+                                <i class="fa-solid fa-chevron-right" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> Detayları Göster
+                            </button>
+                            <div class="extra-fields" id="extra-${index}">
+                                <div class="extra-field-item"><span>E-posta:</span> <b style="color: #00f3ff;">${item.email}</b></div>
+                                <div class="extra-field-item"><span>Telefon:</span> <b style="color: #00f3ff;">${item.phone}</b></div>
+                                <div class="extra-field-item"><span>Güvenlik Durumu:</span> <span style="color: #10b981;">Erişilebilir</span></div>
+                            </div>
                         </div>
                     `;
                     resultsDiv.appendChild(card);
@@ -293,7 +396,18 @@
                 alert('Bağlantı hatası oluştu.');
             }
         }
+
+        function toggleExtra(index) {
+            const extraDiv = document.getElementById(`extra-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            if (extraDiv.style.display === 'flex') {
+                extraDiv.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                extraDiv.style.display = 'flex';
+                icon.style.transform = 'rotate(90deg)';
+            }
+        }
     </script>
 </body>
 </html>
-
