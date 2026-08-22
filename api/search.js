@@ -1,4 +1,4 @@
-Export default async function handler(req, res) {
+export default async function handler(req, res) {
   const { query, type } = req.query;
   
   if (!query) {
