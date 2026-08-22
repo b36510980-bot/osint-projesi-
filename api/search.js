@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   const { query, type } = req.query;
   
@@ -5,23 +7,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Sorgu değeri gerekli.' });
   }
 
-  // E-posta sorgusu
+  // E-posta sorgusu (MD5 Hash düzeltmesi ile 404 hatası önlendi)
   if (type === 'email') {
+    const cleanEmail = query.trim().toLowerCase();
+    const emailHash = crypto.createHash('md5').update(cleanEmail).digest('hex');
+    
     return res.status(200).json([
       {
-        platform: 'Gravatar / E-posta Kaydı',
-        url: `https://en.gravatar.com/${query}`,
+        platform: 'Gravatar / E-posta Profili',
+        url: `https://gravatar.com/${emailHash}`,
         icon: 'fa-solid fa-envelope-circle-check',
         displayName: query,
-        stats: 'E-posta Veritabanı',
-        lastActive: 'Hızlı Sorgu Linki',
+        stats: 'E-posta Hash Analizi',
+        lastActive: 'Profil Linki Hazır',
         email: query,
-        phone: 'Gizli'
+        phone: 'Gizli / Paylaşılmamış',
+        nationality: 'Bilinmiyor',
+        city: 'Bilinmiyor',
+        residence: 'Bilinmiyor',
+        hometown: 'Bilinmiyor'
       }
     ]);
   }
 
-  // Telefon sorgusu (Doğrudan bağlantı yönlendirmeleri)
+  // Telefon sorgusu
   if (type === 'phone') {
     const cleanPhone = query.replace(/\s+/g, '');
     const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
@@ -29,6 +38,10 @@ export default async function handler(req, res) {
     if (!isValidPhone) {
       return res.status(200).json([]);
     }
+
+    const isTr = cleanPhone.startsWith('90') || cleanPhone.startsWith('+90') || cleanPhone.length === 10;
+    const nationality = isTr ? 'Türkiye (TR)' : 'Uluslararası';
+    const cityArea = isTr ? 'Türkiye Operatör Kaydı' : 'Yurt Dışı';
 
     return res.status(200).json([
       {
@@ -39,7 +52,11 @@ export default async function handler(req, res) {
         stats: 'Hızlı Bağlantı',
         lastActive: 'Sohbeti Başlat',
         email: 'Gizli',
-        phone: cleanPhone
+        phone: cleanPhone,
+        nationality: nationality,
+        city: cityArea,
+        residence: isTr ? 'Türkiye' : 'Bilinmiyor',
+        hometown: 'Kişisel Veri (Gizli)'
       },
       {
         platform: 'Telegram',
@@ -49,7 +66,11 @@ export default async function handler(req, res) {
         stats: 'Hızlı Bağlantı',
         lastActive: 'Kontrol Et',
         email: 'Gizli',
-        phone: cleanPhone
+        phone: cleanPhone,
+        nationality: nationality,
+        city: cityArea,
+        residence: isTr ? 'Türkiye' : 'Bilinmiyor',
+        hometown: 'Kişisel Veri (Gizli)'
       },
       {
         platform: 'Truecaller',
@@ -59,19 +80,23 @@ export default async function handler(req, res) {
         stats: 'Rehber Analizi',
         lastActive: 'Web Üzerinden Sorgula',
         email: 'Gizli',
-        phone: cleanPhone
+        phone: cleanPhone,
+        nationality: nationality,
+        city: cityArea,
+        residence: isTr ? 'Türkiye' : 'Bilinmiyor',
+        hometown: 'Kişisel Veri (Gizli)'
       }
     ]);
   }
 
   // Kullanıcı adı sorgusu
   const platforms = [
-    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' }
+    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' },
+    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' },
+    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' },
+    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' },
+    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' },
+    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli', nationality: 'Bilinmiyor', city: 'Bilinmiyor', residence: 'Bilinmiyor', hometown: 'Bilinmiyor' }
   ];
 
   res.status(200).json(platforms);
