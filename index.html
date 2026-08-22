@@ -65,17 +65,8 @@
             transition: all 0.2s ease;
         }
 
-        .tab-btn:hover {
-            border-color: #374151;
-            color: #fff;
-        }
-
-        .tab-btn.active {
-            background-color: #1f2937;
-            border-color: #4b5563;
-            color: #fff;
-            font-weight: 600;
-        }
+        .tab-btn:hover { border-color: #374151; color: #fff; }
+        .tab-btn.active { background-color: #1f2937; border-color: #4b5563; color: #fff; font-weight: 600; }
 
         .search-box {
             width: 100%;
@@ -98,9 +89,7 @@
             transition: border-color 0.2s;
         }
 
-        .search-box input:focus {
-            border-color: #4b5563;
-        }
+        .search-box input:focus { border-color: #4b5563; }
 
         .search-box button {
             padding: 0 20px;
@@ -114,9 +103,7 @@
             font-size: 16px;
         }
 
-        .search-box button:hover {
-            background-color: #4b5563;
-        }
+        .search-box button:hover { background-color: #4b5563; }
 
         .results-container {
             width: 100%;
@@ -145,8 +132,8 @@
         .platform-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 8px;
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
             font-family: 'JetBrains Mono', monospace;
@@ -155,23 +142,13 @@
 
         .profile-main {
             display: flex;
-            align-items: center;
-            gap: 14px;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid #374151;
-            flex-shrink: 0;
-        }
-
-        .profile-info { flex: 1; }
         .profile-name { font-size: 16px; font-weight: 600; color: #fff; }
-        .profile-handle { font-size: 13px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
-        .profile-bio { font-size: 13px; color: #d1d5db; margin-top: 6px; }
+        .profile-handle { font-size: 13px; color: #9ca3af; font-family: 'JetBrains Mono', monospace; }
+        .profile-bio { font-size: 13px; color: #d1d5db; margin-top: 4px; }
 
         .stats-row {
             font-size: 12px;
@@ -324,12 +301,9 @@
                         </div>
                         
                         <div class="profile-main">
-                            <img src="${item.avatar}" class="avatar" alt="Avatar" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'" />
-                            <div class="profile-info">
-                                <div class="profile-name">${item.displayName}</div>
-                                <div class="profile-handle">@${query}</div>
-                                <div class="profile-bio">${item.bio}</div>
-                            </div>
+                            <div class="profile-name">${item.displayName}</div>
+                            <div class="profile-handle">@${query}</div>
+                            <div class="profile-bio">${item.bio}</div>
                         </div>
 
                         <div class="stats-row">
@@ -378,4 +352,3 @@
     </script>
 </body>
 </html>
-
