@@ -58,7 +58,6 @@
         <div class="logo"><i class="fa-solid fa-fingerprint"></i> parmak izi</div>
     </div>
 
-    <!-- Aktif Sekmeler -->
     <div class="search-tabs">
         <button class="tab-btn active" onclick="switchTab('username', this)">
             <i class="fa-solid fa-at"></i> Kullanıcı adı
@@ -76,7 +75,7 @@
         <button onclick="searchProfiles()"><i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <div id="loader" class="loader"><i class="fa-solid fa-spinner"></i> Gerçek zamanlı veriler taranıyor...</div>
+    <div id="loader" class="loader"><i class="fa-solid fa-spinner"></i> Sorgulanıyor...</div>
     <div id="results" class="results-container"></div>
 
     <script>
@@ -93,14 +92,20 @@
             } else if (mode === 'email') {
                 input.placeholder = "E-posta adresini girin...";
             } else if (mode === 'phone') {
-                input.placeholder = "Telefon numarasını girin (+90...)";
+                input.placeholder = "Telefon numarasını girin (Örn: 5... za da +90...)";
             }
         }
 
         const brandStyles = {
-            'GitHub': { color: '#ffffff', bg: '#24292e' },
+            'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
             'TikTok': { color: '#fe2752', bg: '#000000' },
+            'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
+            'GitHub': { color: '#ffffff', bg: '#24292e' },
             'Pinterest': { color: '#E60023', bg: '#E60023' },
+            'Twitter / X': { color: '#1d9bf0', bg: '#000000' },
+            'WhatsApp': { color: '#25D366', bg: '#25D366' },
+            'Telegram': { color: '#229ED9', bg: '#229ED9' },
+            'Rehber / Truecaller': { color: '#38bdf8', bg: '#1d4ed8' },
             'Gravatar / E-posta Kaydı': { color: '#38bdf8', bg: '#1d4ed8' }
         };
 
@@ -118,32 +123,13 @@
             loader.style.display = 'block';
 
             try {
-                // Telefon araması için özel frontend simülasyonu veya gerçek kontrol
-                if (currentMode === 'phone') {
-                    loader.style.display = 'none';
-                    resultsDiv.innerHTML = `
-                        <div class="card">
-                            <div class="card-top"><div class="platform-badge" style="color: #38bdf8;"><i class="fa-solid fa-phone"></i> Telefon Sorgusu</div></div>
-                            <div class="profile-main">
-                                <div class="avatar" style="background: #1d4ed8; color: #fff;"><i class="fa-solid fa-phone"></i></div>
-                                <div class="profile-info">
-                                    <div class="profile-name">${query}</div>
-                                    <div class="profile-handle">Hat / Operatör Analizi</div>
-                                </div>
-                            </div>
-                            <div class="stats-row"><span><i class="fa-solid fa-shield-halved"></i> Format Doğrulandı</span></div>
-                        </div>
-                    `;
-                    return;
-                }
-
                 const response = await fetch(`/api/search?query=${encodeURIComponent(query)}&type=${currentMode}`);
                 const data = await response.json();
                 
                 loader.style.display = 'none';
 
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Bu sorgu için eşleşen aktif kayıt bulunamadı.</div>';
+                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Geçersiz format veya bu değerle eşleşen kayıt bulunamadı.</div>';
                     return;
                 }
 
@@ -160,7 +146,7 @@
                         </div>
                         
                         <div class="profile-main">
-                            <div class="avatar" style="background: ${style.bg}; color: #fff;">
+                            <div class="avatar" style="background: ${style.bg}; color: ${item.platform === 'Snapchat' ? '#000' : '#fff'};">
                                 <i class="${item.icon}"></i>
                             </div>
                             <div class="profile-info">
