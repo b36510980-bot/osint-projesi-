@@ -62,42 +62,30 @@ export default async function handler(req, res) {
   // 3. Kullanıcı Adı Sorgusu
   if (type === 'username') {
     
-    // Instagram (İstatistik: Gizli Profil / API Kısıtlamalı)
+    // Instagram (Kontrolsüz - Doğrudan Yönlendirme)
     results.push({
       platform: 'Instagram',
       url: `https://www.instagram.com/${cleanQuery}/`,
       icon: 'fa-brands fa-instagram',
       displayName: cleanQuery,
-      stats: 'Takipçi: Profilde Görünür',
+      stats: 'Profil Linki',
       lastActive: 'Kontrol Et',
       email: 'Gizli',
       phone: 'Gizli'
     });
 
-    // YouTube
-    results.push({
-      platform: 'YouTube',
-      url: `https://www.youtube.com/@${cleanQuery}`,
-      icon: 'fa-brands fa-youtube',
-      displayName: cleanQuery,
-      stats: 'Abone: Kanalda Görünür',
-      lastActive: 'Kanala Git',
-      email: 'Gizli',
-      phone: 'Gizli'
-    });
-
-    // GitHub (CANLI TAKİPÇİ VE REPO SAYISI)
+    // YouTube (CANLI KONTROL - Sadece Gerçek Kanal Varsa Görünür)
     try {
-      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
-      if (ghRes.ok) {
-        const ghData = await ghRes.json();
+      const ytRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/@${cleanQuery}&format=json`, { headers: fetchHeaders });
+      if (ytRes.ok) {
+        const ytData = await ytRes.json();
         results.push({
-          platform: 'GitHub',
-          url: ghData.html_url,
-          icon: 'fa-brands fa-github',
-          displayName: ghData.name || ghData.login,
-          stats: `Takipçi: ${ghData.followers} • Repo: ${ghData.public_repos}`,
-          lastActive: 'Profili İncele',
+          platform: 'YouTube',
+          url: `https://www.youtube.com/@${cleanQuery}`,
+          icon: 'fa-brands fa-youtube',
+          displayName: ytData.author_name || cleanQuery,
+          stats: 'Kanal Bulundu (Aktif)',
+          lastActive: 'Kanala Git',
           email: 'Gizli',
           phone: 'Gizli'
         });
@@ -147,8 +135,26 @@ export default async function handler(req, res) {
           url: `https://www.tiktok.com/@${cleanQuery}`,
           icon: 'fa-brands fa-tiktok',
           displayName: cleanQuery,
-          stats: 'Takipçi: Profilde Görünür',
+          stats: 'Profil Bulundu',
           lastActive: 'Kontrol Et',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // GitHub - Canlı Kontrol
+    try {
+      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        results.push({
+          platform: 'GitHub',
+          url: ghData.html_url,
+          icon: 'fa-brands fa-github',
+          displayName: ghData.name || ghData.login,
+          stats: `Takipçi: ${ghData.followers} • Repo: ${ghData.public_repos}`,
+          lastActive: 'Profili İncele',
           email: 'Gizli',
           phone: 'Gizli'
         });
@@ -158,3 +164,4 @@ export default async function handler(req, res) {
 
   res.status(200).json(results);
 }
+
