@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     ]);
   }
 
-  // 2. Telefon Sorgusu
+  // 2. Telefon Sorgusu (WhatsApp, Telegram, Truecaller)
   if (type === 'phone') {
     const cleanPhone = cleanQuery.replace(/\s+/g, '');
     const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
@@ -53,6 +53,16 @@ export default async function handler(req, res) {
         displayName: cleanPhone,
         stats: 'Hızlı Bağlantı',
         lastActive: 'Kontrol Et',
+        email: 'Gizli',
+        phone: cleanPhone
+      },
+      {
+        platform: 'Truecaller',
+        url: `https://www.truecaller.com/search/tr/${cleanPhone.replace('+', '')}`,
+        icon: 'fa-solid fa-address-book',
+        displayName: cleanPhone,
+        stats: 'Rehber Analizi',
+        lastActive: 'Web Üzerinden Sorgula',
         email: 'Gizli',
         phone: cleanPhone
       }
@@ -164,4 +174,3 @@ export default async function handler(req, res) {
 
   res.status(200).json(results);
 }
-
