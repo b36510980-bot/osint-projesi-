@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 export default async function handler(req, res) {
   const { query, type } = req.query;
   
@@ -7,79 +5,74 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Sorgu değeri gerekli.' });
   }
 
-  const cleanQuery = query.trim();
-  const results = [];
-
-  // 1. E-posta / Gravatar Gerçek Canlı Kontrolü
-  if (type === 'email' || cleanQuery.includes('@')) {
-    const emailToCheck = cleanQuery.toLowerCase();
-    const emailHash = crypto.createHash('md5').update(emailToCheck).digest('hex');
-    
-    let exists = false;
-    try {
-      const gravRes = await fetch(`https://www.gravatar.com/${emailHash}.json`);
-      exists = gravRes.ok;
-    } catch (e) {}
-
-    if (exists) {
-      results.push({
-        platform: 'Gravatar (E-posta Kaydı)',
-        url: `https://gravatar.com/${emailHash}`,
+  // E-posta sorgusu
+  if (type === 'email') {
+    return res.status(200).json([
+      {
+        platform: 'Gravatar / E-posta Kaydı',
+        url: `https://en.gravatar.com/${query}`,
         icon: 'fa-solid fa-envelope-circle-check',
-        displayName: emailToCheck,
-        stats: 'Aktif Profil',
-        bio: 'Bu e-posta adresine bağlı açık Gravatar hesabı doğrulandı.'
-      });
-    }
+        displayName: query,
+        stats: 'E-posta Veritabanı',
+        lastActive: 'Hızlı Sorgu Linki',
+        email: query,
+        phone: 'Gizli'
+      }
+    ]);
   }
 
-  // 2. Telefon Numarası
+  // Telefon sorgusu (Doğrudan bağlantı yönlendirmeleri)
   if (type === 'phone') {
-    const cleanPhone = cleanQuery.replace(/\D/g, '');
-    results.push({
-      platform: 'WhatsApp',
-      url: `https://wa.me/${cleanPhone}`,
-      icon: 'fa-brands fa-whatsapp',
-      displayName: `+${cleanPhone}`,
-      stats: 'Doğrudan Bağlantı',
-      bio: 'WhatsApp iletişim yönlendirmesi.'
-    });
+    const cleanPhone = query.replace(/\s+/g, '');
+    const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
+
+    if (!isValidPhone) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json([
+      {
+        platform: 'WhatsApp',
+        url: `https://wa.me/${cleanPhone.replace('+', '')}`,
+        icon: 'fa-brands fa-whatsapp',
+        displayName: cleanPhone,
+        stats: 'Hızlı Bağlantı',
+        lastActive: 'Sohbeti Başlat',
+        email: 'Gizli',
+        phone: cleanPhone
+      },
+      {
+        platform: 'Telegram',
+        url: `https://t.me/+${cleanPhone.replace('+', '')}`,
+        icon: 'fa-brands fa-telegram',
+        displayName: cleanPhone,
+        stats: 'Hızlı Bağlantı',
+        lastActive: 'Kontrol Et',
+        email: 'Gizli',
+        phone: cleanPhone
+      },
+      {
+        platform: 'Truecaller',
+        url: `https://www.truecaller.com/search/tr/${cleanPhone.replace('+', '')}`,
+        icon: 'fa-solid fa-address-book',
+        displayName: cleanPhone,
+        stats: 'Rehber Analizi',
+        lastActive: 'Web Üzerinden Sorgula',
+        email: 'Gizli',
+        phone: cleanPhone
+      }
+    ]);
   }
 
-  // 3. Kullanıcı Adı ile Sorgular (GitHub ve YouTube)
-  if (type === 'username') {
-    // GitHub Canlı API Sorgusu
-    try {
-      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`);
-      if (ghRes.ok) {
-        const ghData = await ghRes.json();
-        results.push({
-          platform: 'GitHub (Canlı Veri)',
-          url: ghData.html_url,
-          icon: 'fa-brands fa-github',
-          displayName: ghData.name || ghData.login,
-          stats: `${ghData.public_repos} Repo • ${ghData.followers} Takipçi`,
-          bio: ghData.bio || 'Biyografi belirtilmemiş.'
-        });
-      }
-    } catch (e) {}
+  // Kullanıcı adı sorgusu
+  const platforms = [
+    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' }
+  ];
 
-    // YouTube Canlı oEmbed Kontrolü
-    try {
-      const ytRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/@${cleanQuery}&format=json`);
-      if (ytRes.ok) {
-        const ytData = await ytRes.json();
-        results.push({
-          platform: 'YouTube (Canlı Kanal)',
-          url: `https://www.youtube.com/@${cleanQuery}`,
-          icon: 'fa-brands fa-youtube',
-          displayName: ytData.author_name || cleanQuery,
-          stats: 'Doğrulanmış Kanal',
-          bio: ytData.title || 'YouTube Video Kanalı'
-        });
-      }
-    } catch (e) {}
-  }
-
-  res.status(200).json(results);
+  res.status(200).json(platforms);
 }
