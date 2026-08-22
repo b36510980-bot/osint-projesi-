@@ -8,19 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
         body {
-  background-color: #030712;
-  background-image: radial-gradient(circle at 50% 0%, #7f1d1d 0%, #030712 70%);
-  color: #f3f4f6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 25px 15px;
-}
-
-}
-
+            background-color: #030712;
+            background-image: radial-gradient(circle at 50% 0%, #7f1d1d 0%, #030712 70%);
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 15px;
         }
 
         .header {
@@ -30,21 +27,113 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
             margin-bottom: 25px;
         }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .menu-toggle:hover { transform: scale(1.1); }
 
         .logo {
             font-family: 'JetBrains Mono', monospace;
             font-size: 20px;
             font-weight: 700;
-            color: #00f3ff;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
+        /* YAN MENÜ (SIDEBAR) STİLLERİ */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(239, 68, 68, 0.3);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.8);
+        }
+        .sidebar.open { left: 0; }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .sidebar-close:hover { color: #fff; }
+
+        .profile-section {
+            text-align: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+            margin: 0 auto 12px auto;
+        }
+
+        .profile-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .contact-info {
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 13px;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .contact-info b { color: #ef4444; display: block; margin-bottom: 5px; }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* ARAMA VE ARAYÜZ KISIMLARI */
         .search-tabs {
             width: 100%;
             max-width: 650px;
@@ -71,16 +160,16 @@
         }
 
         .tab-btn:hover {
-            border-color: rgba(0, 243, 255, 0.4);
+            border-color: rgba(239, 68, 68, 0.4);
             color: #fff;
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #00f3ff, #b026ff);
+            background: linear-gradient(135deg, #ef4444, #f97316);
             border-color: transparent;
-            color: #000;
+            color: #fff;
             font-weight: 700;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
         }
 
         .search-box {
@@ -88,14 +177,14 @@
             max-width: 650px;
             display: flex;
             gap: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .search-box input {
             flex: 1;
             padding: 15px 20px;
             background-color: rgba(11, 15, 25, 0.9);
-            border: 1px solid rgba(0, 243, 255, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             border-radius: 14px;
             color: #fff;
             font-size: 16px;
@@ -106,26 +195,26 @@
         }
 
         .search-box input:focus {
-            border-color: #00f3ff;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 2px 4px rgba(0,0,0,0.5);
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3), inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .search-box button {
             padding: 0 25px;
-            background: linear-gradient(135deg, #00f3ff, #b026ff);
-            color: #000;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #fff;
             border: none;
             border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 18px;
-            box-shadow: 0 0 15px rgba(176, 38, 255, 0.4);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
         }
 
         .search-box button:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.6);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
         }
 
         .results-container {
@@ -150,8 +239,8 @@
         }
 
         .card:hover {
-            border-color: rgba(0, 243, 255, 0.4);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
             transform: translateY(-2px);
         }
 
@@ -208,7 +297,7 @@
         .accordion-btn {
             background: none;
             border: none;
-            color: #00f3ff;
+            color: #ef4444;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -222,7 +311,7 @@
         .extra-fields {
             display: none;
             background: rgba(3, 7, 18, 0.8);
-            border: 1px solid rgba(0, 243, 255, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.2);
             border-radius: 12px;
             padding: 12px;
             margin-top: 8px;
@@ -234,44 +323,85 @@
         .extra-field-item span:first-child { color: #9ca3af; }
 
         .visit-btn {
-            background: rgba(0, 243, 255, 0.1);
-            color: #00f3ff;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
             padding: 8px 16px;
             border-radius: 10px;
             text-decoration: none;
             font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(0, 243, 255, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             transition: all 0.2s;
             font-family: 'JetBrains Mono', monospace;
         }
 
         .visit-btn:hover {
-            background: #00f3ff;
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
         }
 
         .loader {
             display: none;
             text-align: center;
-            color: #00f3ff;
+            color: #ef4444;
             margin: 40px 0;
             font-size: 15px;
             font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
         }
         
         .loader i { animation: spin 1s linear infinite; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* BİLGİLENDİRME KUTULARI (Ateş temalı) */
+        .info-card {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 13.5px;
+            line-height: 1.6;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .info-card h3 { color: #e2e8f0; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo"><i class="fa-solid fa-terminal" style="color: #b026ff;"></i> osint // v2.0</div>
+    <!-- YAN MENÜ (SIDEBAR) -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span style="font-family:'JetBrains Mono'; font-weight:700; color:#ef4444;">MENÜ</span>
+            <button class="sidebar-close" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="profile-section">
+            <img src="https://github.com/b36510980.png" alt="Profil Fotoğrafı" class="profile-avatar">
+            <div class="profile-title">Burak</div>
+            <div style="font-size:12px; color:#9ca3af; margin-top:2px;">Developer / Researcher</div>
+        </div>
+
+        <div class="contact-info">
+            <b><i class="fa-solid fa-envelope"></i> İletişim E-Posta:</b>
+            b36510980@gmail.com
+        </div>
     </div>
 
+    <!-- ÜST HEADER -->
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo"><i class="fa-solid fa-terminal" style="color: #ef4444;"></i> osint // v2.0</div>
+        </div>
+    </div>
+
+    <!-- SEKMELER -->
     <div class="search-tabs">
         <button class="tab-btn active" onclick="switchTab('username', this)">
             <i class="fa-solid fa-at"></i> Kullanıcı Adı
@@ -284,6 +414,7 @@
         </button>
     </div>
 
+    <!-- ARAMA ÇUBUĞU -->
     <div class="search-box">
         <input type="text" id="queryInput" placeholder="Kullanıcı adı girin (@sız)..." />
         <button onclick="searchProfiles()"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -292,8 +423,29 @@
     <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Veritabanı taranıyor...</div>
     <div id="results" class="results-container"></div>
 
+    <!-- BİLGİLENDİRME VE YASAL UYARI KUTULARI -->
+    <div class="info-card" style="border-left: 4px solid #ef4444;">
+        <strong style="color: #e2e8f0; display: block; margin-bottom: 5px;"><i class="fa-solid fa-circle-info" style="color: #ef4444;"></i> Sistem Notu</strong>
+        Instagram, TikTok ve Snapchat gibi platformların katı bot korumaları nedeniyle bazı profiller doğrudan sunucu üzerinden doğrulanamayabilir. Listelenen bağlantılar sizi ilgili profil yapısına yönlendirir.
+    </div>
+
+    <div class="info-card">
+        <h3><i class="fa-solid fa-network-wired" style="color: #ef4444;"></i> OSINT (Açık Kaynak İstihbaratı) Nedir?</h3>
+        <p style="margin-bottom: 10px;">
+            <strong>OSINT (Open Source Intelligence)</strong>, internet üzerindeki herkese açık (public) verilerin toplanması, analiz edilmesi ve anlamlandırılması sürecidir.
+        </p>
+        <div style="background-color: rgba(0, 0, 0, 0.3); border-left: 3px solid #f59e0b; padding: 10px; border-radius: 4px; font-size: 12px; color: #cbd5e1; margin-top: 10px;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> <strong>Yasal Uyarı:</strong> Bu araç yalnızca açık kaynaklı ve indekslenmiş verileri tarar. Sorumluluk kullanıcıya aittir.
+        </div>
+    </div>
+
     <script>
         let currentMode = 'username';
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
 
         function switchTab(mode, btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -301,8 +453,8 @@
             currentMode = mode;
             
             const input = document.getElementById('queryInput');
-            input.value = ''; // Sekme değiştiğinde kutuyu sıfırla
-            document.getElementById('results').innerHTML = ''; // Eski sonuçları temizle
+            input.value = '';
+            document.getElementById('results').innerHTML = '';
 
             if (mode === 'username') {
                 input.placeholder = "Kullanıcı adı girin (@sız)...";
@@ -315,15 +467,15 @@
 
         const brandStyles = {
             'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
-            'TikTok': { color: '#00f3ff', bg: '#000000' },
+            'TikTok': { color: '#ef4444', bg: '#000000' },
             'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
             'GitHub': { color: '#ffffff', bg: '#1f2937' },
             'Pinterest': { color: '#E60023', bg: '#E60023' },
-            'Twitter / X': { color: '#00f3ff', bg: '#000000' },
+            'Twitter / X': { color: '#ef4444', bg: '#000000' },
             'WhatsApp': { color: '#25D366', bg: '#25D366' },
             'Telegram': { color: '#229ED9', bg: '#229ED9' },
-            'Truecaller': { color: '#38bdf8', bg: '#1d4ed8' },
-            'Gravatar / E-posta Kaydı': { color: '#00f3ff', bg: '#1d4ed8' }
+            'Truecaller': { color: '#ef4444', bg: '#1d4ed8' },
+            'Gravatar / E-posta Kaydı': { color: '#ef4444', bg: '#1d4ed8' }
         };
 
         async function searchProfiles() {
@@ -351,7 +503,7 @@
                 }
 
                 data.forEach((item, index) => {
-                    const style = brandStyles[item.platform] || { color: '#00f3ff', bg: '#111827' };
+                    const style = brandStyles[item.platform] || { color: '#ef4444', bg: '#111827' };
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
@@ -373,7 +525,7 @@
                         </div>
 
                         <div class="stats-row">
-                            <span><i class="fa-solid fa-shield-halved" style="color:#00f3ff;"></i> ${item.stats}</span>
+                            <span><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> ${item.stats}</span>
                         </div>
 
                         <div class="date-row">
@@ -385,8 +537,8 @@
                                 <i class="fa-solid fa-chevron-right" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> Detayları Göster
                             </button>
                             <div class="extra-fields" id="extra-${index}">
-                                <div class="extra-field-item"><span>E-posta:</span> <b style="color: #00f3ff;">${item.email}</b></div>
-                                <div class="extra-field-item"><span>Telefon:</span> <b style="color: #00f3ff;">${item.phone}</b></div>
+                                <div class="extra-field-item"><span>E-posta:</span> <b style="color: #ef4444;">${item.email}</b></div>
+                                <div class="extra-field-item"><span>Telefon:</span> <b style="color: #ef4444;">${item.phone}</b></div>
                                 <div class="extra-field-item"><span>Güvenlik Durumu:</span> <span style="color: #10b981;">Erişilebilir</span></div>
                             </div>
                         </div>
@@ -414,33 +566,4 @@
     </script>
 </body>
 </html>
-<div style="background-color: #1e293b; border-left: 4px solid #3b82f6; color: #f8fafc; padding: 12px 16px; border-radius: 6px; margin: 15px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 10px;">
-  <i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-top: 3px; font-size: 16px;"></i>
-  <div>
-    <strong>Bilgilendirme ve Kullanım İpucu:</strong> 
-    Instagram, TikTok ve Snapchat gibi platformların katı bot korumaları (Cloudflare ve güvenlik duvarları) nedeniyle bazı profiller doğrudan sunucu üzerinden doğrulanamayabilir. Listelenen bağlantılar sizi doğrudan ilgili profil yapısına yönlendirir. Profilin aktif olup olmadığını kesin olarak görmek için bağlantılara tıklayarak kontrol edebilirsiniz.
-  </div>
-</div>
-<!-- OSINT BİLGİLENDİRME ALANI BAŞLANGICI -->
-<div style="background-color: rgba(15, 23, 42, 0.8); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 8px; padding: 20px; margin: 25px auto; max-width: 600px; color: #94a3b8; font-size: 14px; line-height: 1.6; text-align: left; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
-  
-  <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(168, 85, 247, 0.2); padding-bottom: 10px; margin-bottom: 15px;">
-    <i class="fa-solid fa-network-wired" style="color: #a855f7; font-size: 18px;"></i>
-    <h3 style="color: #e2e8f0; font-size: 16px; font-weight: 600; margin: 0;">OSINT (Açık Kaynak İstihbaratı) Nedir?</h3>
-  </div>
 
-  <p style="margin: 0 0 10px 0;">
-    <strong>OSINT (Open Source Intelligence)</strong>, internet üzerindeki herkese açık (public) verilerin toplanması, analiz edilmesi ve anlamlandırılması sürecidir. Siber güvenlik uzmanları, araştırmacılar ve analistler tarafından dijital ayak izi haritalandırması amacıyla yaygın olarak kullanılır.
-  </p>
-
-  <p style="margin: 0 0 15px 0;">
-    Bu panel; kullanıcı adı, e-posta veya telefon numarası gibi girdilerle internetin farklı katmanlarında (sosyal medya ağları, geliştirici platformları ve halka açık veri tabanları) saniyeler içinde pasif bilgi toplama işlemi gerçekleştirir.
-  </p>
-
-  <div style="background-color: rgba(0, 0, 0, 0.2); border-left: 3px solid #f59e0b; padding: 10px 12px; border-radius: 4px; font-size: 12.5px; color: #cbd5e1;">
-    <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b; margin-right: 5px;"></i>
-    <strong>Yasal Uyarı:</strong> Bu araç yalnızca açık kaynaklı ve indekslenmiş verileri tarar. Herhangi bir sisteme sızmaz, şifre kırmaz veya gizli verileri ihlal etmez. Elde edilen bilgilerin etik kurallar çerçevesinde ve yasalara uygun kullanım sorumluluğu tamamen kullanıcıya aittir.
-  </div>
-
-</div>
-<!-- OSINT BİLGİLENDİRME ALANI BİTİŞİ -->
