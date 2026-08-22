@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARMAK İZİ // Cyber OSINT Panel</title>
+    <title>OSINT // Cyber OSINT Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -266,7 +266,7 @@
 <body>
 
     <div class="header">
-        <div class="logo"><i class="fa-solid fa-terminal" style="color: #b026ff;"></i> parmak_izi // v2.0</div>
+        <div class="logo"><i class="fa-solid fa-terminal" style="color: #b026ff;"></i> osint // v2.0</div>
     </div>
 
     <div class="search-tabs">
@@ -298,6 +298,9 @@
             currentMode = mode;
             
             const input = document.getElementById('queryInput');
+            input.value = ''; // Sekme değiştiğinde kutuyu sıfırla
+            document.getElementById('results').innerHTML = ''; // Eski sonuçları temizle
+
             if (mode === 'username') {
                 input.placeholder = "Kullanıcı adı girin (@sız)...";
             } else if (mode === 'email') {
@@ -408,4 +411,3 @@
     </script>
 </body>
 </html>
-
