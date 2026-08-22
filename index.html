@@ -20,7 +20,7 @@
         .results-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 15px; }
         .card { background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 16px; transition: transform 0.2s, border-color 0.2s; }
         .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .platform-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #1f2937; flex-shrink: 0; }
+        .platform-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .card-info { flex: 1; }
         .platform-name { font-size: 14px; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
         .profile-name { font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px; }
@@ -40,7 +40,7 @@
     </div>
 
     <div class="search-box">
-        <input type="text" id="usernameInput" placeholder="Kullanıcı adı girin (örn: nurr_ssw)..." />
+        <input type="text" id="usernameInput" placeholder="Kullanıcı adı girin..." />
         <button onclick="searchProfiles()">Ara</button>
     </div>
 
@@ -48,16 +48,16 @@
     <div id="results" class="results-container"></div>
 
     <script>
-        // Platformların orijinal marka renkleri
-        const brandColors = {
-            'Instagram': '#E1306C',
-            'TikTok': '#fe2752',
-            'Snapchat': '#FFFC00',
-            'GitHub': '#ffffff',
-            'Reddit': '#FF4500',
-            'Twitter / X': '#1d9bf0',
-            'Pinterest': '#E60023',
-            'Roblox': '#e0e0e0'
+        // Platformların orijinal uygulama simgesi arka planları ve renk uyumları
+        const brandStyles = {
+            'Instagram': { bg: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', textCol: '#E1306C' },
+            'TikTok': { bg: '#000000', color: '#fff', textCol: '#fe2752' },
+            'Snapchat': { bg: '#FFFC00', color: '#000', textCol: '#FFFC00' },
+            'GitHub': { bg: '#24292e', color: '#fff', textCol: '#ffffff' },
+            'Reddit': { bg: '#FF4500', color: '#fff', textCol: '#FF4500' },
+            'Twitter / X': { bg: '#000000', color: '#fff', textCol: '#1d9bf0' },
+            'Pinterest': { bg: '#E60023', color: '#fff', textCol: '#E60023' },
+            'Roblox': { bg: '#1f2937', color: '#fff', textCol: '#e0e0e0' }
         };
 
         async function searchProfiles() {
@@ -82,13 +82,13 @@
                 }
 
                 data.forEach(item => {
-                    const color = brandColors[item.platform] || '#38bdf8';
+                    const style = brandStyles[item.platform] || { bg: '#1f2937', color: '#38bdf8', textCol: '#38bdf8' };
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
-                        <div class="platform-icon" style="color: ${color};"><i class="${item.icon}"></i></div>
+                        <div class="platform-icon" style="background: ${style.bg}; color: ${style.color};"><i class="${item.icon}"></i></div>
                         <div class="card-info">
-                            <div class="platform-name" style="color: ${color};">${item.platform} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></div>
+                            <div class="platform-name" style="color: ${style.textCol};">${item.platform} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></div>
                             <div class="profile-name">@${username}</div>
                             <div class="profile-handle">Aktif Profil</div>
                         </div>
