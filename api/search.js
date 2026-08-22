@@ -72,7 +72,20 @@ export default async function handler(req, res) {
   // 3. Kullanıcı Adı Sorgusu
   if (type === 'username') {
     
-    // --- KONTROLSÜZ / DİREKT LİSTELENENLER (Engel yeme riski yok) ---
+    // --- KONTROLSÜZ / DİREKT LİSTELENENLER ---
+    
+    // Google Arama Entegrasyonu
+    results.push({
+      platform: 'Google',
+      url: `https://www.google.com/search?q=${encodeURIComponent(cleanQuery)}`,
+      icon: 'fa-brands fa-google',
+      displayName: cleanQuery,
+      stats: 'Web Arama Sonuçları',
+      lastActive: 'Google’da Ara',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
+
     results.push({
       platform: 'Instagram',
       url: `https://www.instagram.com/${cleanQuery}/`,
@@ -129,7 +142,7 @@ export default async function handler(req, res) {
     });
     // -------------------------------------------------------------
 
-    // GitHub (Canlı Takipçi ve Repo Bilgisi - API İzin Veriyor)
+    // GitHub (Canlı Takipçi ve Repo Bilgisi)
     try {
       const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
       if (ghRes.ok) {
@@ -150,3 +163,4 @@ export default async function handler(req, res) {
 
   res.status(200).json(results);
 }
+
