@@ -5,30 +5,36 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Sorgu değeri gerekli.' });
   }
 
-  // E-posta sorgusu
+  const cleanQuery = query.trim();
+  const results = [];
+  
+  // Sunucu isteklerinin engellenmemesi için tarayıcı kimliği
+  const fetchHeaders = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  };
+
+  // 1. E-posta Sorgusu
   if (type === 'email') {
     return res.status(200).json([
       {
         platform: 'Gravatar / E-posta Kaydı',
-        url: `https://en.gravatar.com/${query}`,
+        url: `https://en.gravatar.com/${cleanQuery}`,
         icon: 'fa-solid fa-envelope-circle-check',
-        displayName: query,
+        displayName: cleanQuery,
         stats: 'E-posta Veritabanı',
         lastActive: 'Hızlı Sorgu Linki',
-        email: query,
+        email: cleanQuery,
         phone: 'Gizli'
       }
     ]);
   }
 
-  // Telefon sorgusu (Doğrudan bağlantı yönlendirmeleri)
+  // 2. Telefon Sorgusu
   if (type === 'phone') {
-    const cleanPhone = query.replace(/\s+/g, '');
+    const cleanPhone = cleanQuery.replace(/\s+/g, '');
     const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
 
-    if (!isValidPhone) {
-      return res.status(200).json([]);
-    }
+    if (!isValidPhone) return res.status(200).json([]);
 
     return res.status(200).json([
       {
@@ -50,30 +56,119 @@ export default async function handler(req, res) {
         lastActive: 'Kontrol Et',
         email: 'Gizli',
         phone: cleanPhone
-      },
-      {
-        platform: 'Truecaller',
-        url: `https://www.truecaller.com/search/tr/${cleanPhone.replace('+', '')}`,
-        icon: 'fa-solid fa-address-book',
-        displayName: cleanPhone,
-        stats: 'Rehber Analizi',
-        lastActive: 'Web Üzerinden Sorgula',
-        email: 'Gizli',
-        phone: cleanPhone
       }
     ]);
   }
 
-  // Kullanıcı adı sorgusu
-  const platforms = [
-    { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'YouTube', url: `https://www.youtube.com/@${query}`, icon: 'fa-brands fa-youtube', displayName: query, stats: 'Kanal Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
-    { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' }
-  ];
+  // 3. Kullanıcı Adı Sorgusu (CANLI KONTROLLER)
+  if (type === 'username') {
+    
+    // YouTube
+    try {
+      const ytRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/@${cleanQuery}&format=json`, { headers: fetchHeaders });
+      if (ytRes.ok) {
+        const ytData = await ytRes.json();
+        results.push({
+          platform: 'YouTube',
+          url: `https://www.youtube.com/@${cleanQuery}`,
+          icon: 'fa-brands fa-youtube',
+          displayName: ytData.author_name || cleanQuery,
+          stats: 'Kanal Bulundu',
+          lastActive: 'Kanala Git',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
 
-  res.status(200).json(platforms);
+    // NGL (Gizli Soru Uygulaması)
+    try {
+      const nglRes = await fetch(`https://ngl.link/${cleanQuery}`, { headers: fetchHeaders });
+      // NGL genellikle hesap yoksa 404 döndürür
+      if (nglRes.ok) {
+        results.push({
+          platform: 'NGL',
+          url: `https://ngl.link/${cleanQuery}`,
+          icon: 'fa-solid fa-link', // NGL'nin özel ikonu olmadığı için link ikonu kullanıldı
+          displayName: cleanQuery,
+          stats: 'Soru Sayfası Bulundu',
+          lastActive: 'Soru Sor',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // Snapchat
+    try {
+      const snapRes = await fetch(`https://www.snapchat.com/add/${cleanQuery}`, { headers: fetchHeaders });
+      if (snapRes.ok) {
+        results.push({
+          platform: 'Snapchat',
+          url: `https://www.snapchat.com/add/${cleanQuery}`,
+          icon: 'fa-brands fa-snapchat',
+          displayName: cleanQuery,
+          stats: 'Profil Bulundu',
+          lastActive: 'Profili İncele',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // Instagram (Bot korumasına takılma ihtimali var)
+    try {
+      const igRes = await fetch(`https://www.instagram.com/${cleanQuery}/`, { headers: fetchHeaders });
+      if (igRes.ok) {
+        results.push({
+          platform: 'Instagram',
+          url: `https://www.instagram.com/${cleanQuery}/`,
+          icon: 'fa-brands fa-instagram',
+          displayName: cleanQuery,
+          stats: 'Profil Olabilir',
+          lastActive: 'Kontrol Et',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // TikTok (Bot korumasına takılma ihtimali var)
+    try {
+      const tkRes = await fetch(`https://www.tiktok.com/@${cleanQuery}`, { headers: fetchHeaders });
+      if (tkRes.ok) {
+        results.push({
+          platform: 'TikTok',
+          url: `https://www.tiktok.com/@${cleanQuery}`,
+          icon: 'fa-brands fa-tiktok',
+          displayName: cleanQuery,
+          stats: 'Profil Olabilir',
+          lastActive: 'Kontrol Et',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+
+    // GitHub
+    try {
+      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        results.push({
+          platform: 'GitHub',
+          url: ghData.html_url,
+          icon: 'fa-brands fa-github',
+          displayName: ghData.name || ghData.login,
+          stats: `${ghData.public_repos} Repo`,
+          lastActive: 'Profili İncele',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
+  }
+
+  // Sadece doğrulanmış, gerçekten var olan (veya bot engelini aşan) sonuçları döndür
+  res.status(200).json(results);
 }
