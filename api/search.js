@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     ]);
   }
 
-  // 2. Telefon Sorgusu
+  // 2. Telefon Sorgusu (WhatsApp, Telegram, Truecaller)
   if (type === 'phone') {
     const cleanPhone = cleanQuery.replace(/\s+/g, '');
     const isValidPhone = /^\+?[0-9]{10,14}$/.test(cleanPhone);
@@ -69,10 +69,10 @@ export default async function handler(req, res) {
     ]);
   }
 
-  // 3. Kullanıcı Adı Sorgusu (Paralel / Eş Zamanlı Tarama - Vercel Hız Optimizasyonlu)
+  // 3. Kullanıcı Adı Sorgusu
   if (type === 'username') {
     
-    // Instagram (Kontrolsüz - Doğrudan)
+    // --- KONTROLSÜZ / DİREKT LİSTELENENLER (Engel yeme riski yok) ---
     results.push({
       platform: 'Instagram',
       url: `https://www.instagram.com/${cleanQuery}/`,
@@ -84,100 +84,69 @@ export default async function handler(req, res) {
       phone: 'Gizli'
     });
 
-    // Diğer platformları aynı anda (paralel) sorgula ki Vercel zaman aşımına uğramasın
-    const checks = [
-      // YouTube
-      fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/@${cleanQuery}&format=json`, { headers: fetchHeaders })
-        .then(async r => {
-          if (r.ok) {
-            const data = await r.json();
-            results.push({
-              platform: 'YouTube',
-              url: `https://www.youtube.com/@${cleanQuery}`,
-              icon: 'fa-brands fa-youtube',
-              displayName: data.author_name || cleanQuery,
-              stats: 'Kanal Bulundu (Aktif)',
-              lastActive: 'Kanala Git',
-              email: 'Gizli',
-              phone: 'Gizli'
-            });
-          }
-        }).catch(() => {}),
+    results.push({
+      platform: 'YouTube',
+      url: `https://www.youtube.com/@${cleanQuery}`,
+      icon: 'fa-brands fa-youtube',
+      displayName: cleanQuery,
+      stats: 'Kanal Linki',
+      lastActive: 'Kanala Git',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
 
-      // NGL
-      fetch(`https://ngl.link/${cleanQuery}`, { headers: fetchHeaders })
-        .then(r => {
-          if (r.ok) {
-            results.push({
-              platform: 'NGL',
-              url: `https://ngl.link/${cleanQuery}`,
-              icon: 'fa-solid fa-link', 
-              displayName: cleanQuery,
-              stats: 'Soru Sayfası Aktif',
-              lastActive: 'Soru Sor',
-              email: 'Gizli',
-              phone: 'Gizli'
-            });
-          }
-        }).catch(() => {}),
+    results.push({
+      platform: 'TikTok',
+      url: `https://www.tiktok.com/@${cleanQuery}`,
+      icon: 'fa-brands fa-tiktok',
+      displayName: cleanQuery,
+      stats: 'Profil Linki',
+      lastActive: 'Kontrol Et',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
 
-      // Snapchat
-      fetch(`https://www.snapchat.com/add/${cleanQuery}`, { headers: fetchHeaders })
-        .then(r => {
-          if (r.ok) {
-            results.push({
-              platform: 'Snapchat',
-              url: `https://www.snapchat.com/add/${cleanQuery}`,
-              icon: 'fa-brands fa-snapchat',
-              displayName: cleanQuery,
-              stats: 'Profil Bulundu',
-              lastActive: 'Profili İncele',
-              email: 'Gizli',
-              phone: 'Gizli'
-            });
-          }
-        }).catch(() => {}),
+    results.push({
+      platform: 'Snapchat',
+      url: `https://www.snapchat.com/add/${cleanQuery}`,
+      icon: 'fa-brands fa-snapchat',
+      displayName: cleanQuery,
+      stats: 'Profil Linki',
+      lastActive: 'Profili İncele',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
 
-      // TikTok
-      fetch(`https://www.tiktok.com/@${cleanQuery}`, { headers: fetchHeaders })
-        .then(r => {
-          if (r.ok) {
-            results.push({
-              platform: 'TikTok',
-              url: `https://www.tiktok.com/@${cleanQuery}`,
-              icon: 'fa-brands fa-tiktok',
-              displayName: cleanQuery,
-              stats: 'Profil Bulundu',
-              lastActive: 'Kontrol Et',
-              email: 'Gizli',
-              phone: 'Gizli'
-            });
-          }
-        }).catch(() => {}),
+    results.push({
+      platform: 'NGL',
+      url: `https://ngl.link/${cleanQuery}`,
+      icon: 'fa-solid fa-link', 
+      displayName: cleanQuery,
+      stats: 'Soru Sayfası',
+      lastActive: 'Soru Sor',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
+    // -------------------------------------------------------------
 
-      // GitHub
-      fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders })
-        .then(async r => {
-          if (r.ok) {
-            const ghData = await r.json();
-            results.push({
-              platform: 'GitHub',
-              url: ghData.html_url,
-              icon: 'fa-brands fa-github',
-              displayName: ghData.name || ghData.login,
-              stats: `Takipçi: ${ghData.followers} • Repo: ${ghData.public_repos}`,
-              lastActive: 'Profili İncele',
-              email: 'Gizli',
-              phone: 'Gizli'
-            });
-          }
-        }).catch(() => {})
-    ];
-
-    // Tüm fetch işlemlerinin aynı anda bitmesini bekle
-    await Promise.allSettled(checks);
+    // GitHub (Canlı Takipçi ve Repo Bilgisi - API İzin Veriyor)
+    try {
+      const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
+      if (ghRes.ok) {
+        const ghData = await ghRes.json();
+        results.push({
+          platform: 'GitHub',
+          url: ghData.html_url,
+          icon: 'fa-brands fa-github',
+          displayName: ghData.name || ghData.login,
+          stats: `Takipçi: ${ghData.followers} • Repo: ${ghData.public_repos}`,
+          lastActive: 'Profili İncele',
+          email: 'Gizli',
+          phone: 'Gizli'
+        });
+      }
+    } catch (e) {}
   }
 
   res.status(200).json(results);
 }
-
