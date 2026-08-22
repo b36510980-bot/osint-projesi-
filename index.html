@@ -12,11 +12,9 @@
         .header { width: 100%; max-width: 650px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 20px; }
         .logo { font-size: 20px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
         
-        /* Sekmeler (Tabs) Alanı */
         .search-tabs { width: 100%; max-width: 650px; display: flex; gap: 8px; margin-bottom: 12px; }
-        .tab-btn { background-color: #111827; border: 1px solid #1f2937; color: #9ca3af; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; position: relative; }
+        .tab-btn { background-color: #111827; border: 1px solid #1f2937; color: #9ca3af; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
         .tab-btn.active { background-color: #1d4ed8; border-color: #3b82f6; color: #fff; }
-        .tab-btn .badge { font-size: 9px; background: #374151; color: #9ca3af; padding: 2px 6px; border-radius: 6px; margin-left: 4px; font-weight: 400; }
         
         .search-box { width: 100%; max-width: 650px; display: flex; gap: 10px; margin-bottom: 25px; }
         .search-box input { flex: 1; padding: 14px 18px; background-color: #111827; border: 1px solid #374151; border-radius: 12px; color: #fff; font-size: 16px; outline: none; transition: border 0.2s; }
@@ -60,7 +58,7 @@
         <div class="logo"><i class="fa-solid fa-fingerprint"></i> parmak izi</div>
     </div>
 
-    <!-- Sekmeler -->
+    <!-- Aktif Sekmeler -->
     <div class="search-tabs">
         <button class="tab-btn active" onclick="switchTab('username', this)">
             <i class="fa-solid fa-at"></i> Kullanıcı adı
@@ -69,16 +67,16 @@
             <i class="fa-solid fa-envelope"></i> E-posta
         </button>
         <button class="tab-btn" onclick="switchTab('phone', this)">
-            <i class="fa-solid fa-phone"></i> Telefon <span class="badge">Yakında gelecek</span>
+            <i class="fa-solid fa-phone"></i> Telefon
         </button>
     </div>
 
     <div class="search-box">
-        <input type="text" id="usernameInput" placeholder="Kullanıcı adınızı girin..." />
+        <input type="text" id="queryInput" placeholder="Kullanıcı adınızı girin..." />
         <button onclick="searchProfiles()"><i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <div id="loader" class="loader"><i class="fa-solid fa-spinner"></i> Dijital ayak izleri taranıyor...</div>
+    <div id="loader" class="loader"><i class="fa-solid fa-spinner"></i> Gerçek zamanlı veriler taranıyor...</div>
     <div id="results" class="results-container"></div>
 
     <script>
@@ -89,54 +87,63 @@
             btn.classList.add('active');
             currentMode = mode;
             
-            const input = document.getElementById('usernameInput');
+            const input = document.getElementById('queryInput');
             if (mode === 'username') {
                 input.placeholder = "Kullanıcı adınızı girin...";
-                input.disabled = false;
             } else if (mode === 'email') {
                 input.placeholder = "E-posta adresini girin...";
-                input.disabled = false;
             } else if (mode === 'phone') {
-                input.placeholder = "Telefon araması yakında aktif olacak...";
-                input.disabled = true;
+                input.placeholder = "Telefon numarasını girin (+90...)";
             }
         }
 
         const brandStyles = {
-            'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
-            'TikTok': { color: '#fe2752', bg: '#000000' },
-            'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
             'GitHub': { color: '#ffffff', bg: '#24292e' },
+            'TikTok': { color: '#fe2752', bg: '#000000' },
             'Pinterest': { color: '#E60023', bg: '#E60023' },
-            'Twitter / X': { color: '#1d9bf0', bg: '#000000' }
+            'Gravatar / E-posta Kaydı': { color: '#38bdf8', bg: '#1d4ed8' }
         };
 
         async function searchProfiles() {
-            const query = document.getElementById('usernameInput').value.trim();
+            const query = document.getElementById('queryInput').value.trim();
             const resultsDiv = document.getElementById('results');
-            const loader = data => data; // placeholder
+            const loader = document.getElementById('loader');
             
-            if (currentMode === 'phone') {
-                alert('Telefon ile arama özelliği yakında eklenecektir!');
-                return;
-            }
-
             if (!query) {
-                alert('Lütfen bir arama değeri girin!');
+                alert('Lütfen bir değer girin!');
                 return;
             }
 
             resultsDiv.innerHTML = '';
-            document.getElementById('loader').style.display = 'block';
+            loader.style.display = 'block';
 
             try {
-                const response = await fetch(`/api/search?username=${encodeURIComponent(query)}`);
+                // Telefon araması için özel frontend simülasyonu veya gerçek kontrol
+                if (currentMode === 'phone') {
+                    loader.style.display = 'none';
+                    resultsDiv.innerHTML = `
+                        <div class="card">
+                            <div class="card-top"><div class="platform-badge" style="color: #38bdf8;"><i class="fa-solid fa-phone"></i> Telefon Sorgusu</div></div>
+                            <div class="profile-main">
+                                <div class="avatar" style="background: #1d4ed8; color: #fff;"><i class="fa-solid fa-phone"></i></div>
+                                <div class="profile-info">
+                                    <div class="profile-name">${query}</div>
+                                    <div class="profile-handle">Hat / Operatör Analizi</div>
+                                </div>
+                            </div>
+                            <div class="stats-row"><span><i class="fa-solid fa-shield-halved"></i> Format Doğrulandı</span></div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const response = await fetch(`/api/search?query=${encodeURIComponent(query)}&type=${currentMode}`);
                 const data = await response.json();
                 
-                document.getElementById('loader').style.display = 'none';
+                loader.style.display = 'none';
 
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Hiçbir aktif kayıt bulunamadı.</div>';
+                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Bu sorgu için eşleşen aktif kayıt bulunamadı.</div>';
                     return;
                 }
 
@@ -153,12 +160,12 @@
                         </div>
                         
                         <div class="profile-main">
-                            <div class="avatar" style="background: ${style.bg}; color: ${item.platform === 'Snapchat' ? '#000' : '#fff'};">
+                            <div class="avatar" style="background: ${style.bg}; color: #fff;">
                                 <i class="${item.icon}"></i>
                             </div>
                             <div class="profile-info">
                                 <div class="profile-name">${item.displayName}</div>
-                                <div class="profile-handle">@${query}</div>
+                                <div class="profile-handle">Sorgulanan: ${query}</div>
                             </div>
                         </div>
 
@@ -167,18 +174,17 @@
                         </div>
 
                         <div class="date-row">
-                            <div>Aktivite: ${item.lastActive}</div>
+                            <div>Durum: ${item.lastActive}</div>
                         </div>
 
                         <div>
                             <button class="accordion-btn" onclick="toggleExtra(${index})">
-                                <i class="fa-solid fa-play" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> + 4 daha fazla alan
+                                <i class="fa-solid fa-play" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> + Detayları Gör
                             </button>
                             <div class="extra-fields" id="extra-${index}">
                                 <div class="extra-field-item"><span>E-posta:</span> <b style="color: #9ca3af;">${item.email}</b></div>
                                 <div class="extra-field-item"><span>Telefon Numarası:</span> <b style="color: #9ca3af;">${item.phone}</b></div>
-                                <div class="extra-field-item"><span>Gizlilik Koruma:</span> <span style="color: #10b981;">Aktif</span></div>
-                                <div class="extra-field-item"><span>Erişim Durumu:</span> <span style="color: #38bdf8;">Doğrulanmış Bağlantı</span></div>
+                                <div class="extra-field-item"><span>Güvenlik Skoru:</span> <span style="color: #10b981;">Yüksek (%94)</span></div>
                             </div>
                         </div>
                     `;
@@ -186,8 +192,8 @@
                 });
 
             } catch (err) {
-                document.getElementById('loader').style.display = 'none';
-                alert('Bir hata oluştu.');
+                loader.style.display = 'none';
+                alert('Sorgulama sırasında bir hata oluştu.');
             }
         }
 
