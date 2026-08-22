@@ -9,14 +9,20 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .header { width: 100%; max-width: 650px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 25px; }
+        .header { width: 100%; max-width: 650px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 20px; }
         .logo { font-size: 20px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        
+        /* Sekmeler (Tabs) Alanı */
+        .search-tabs { width: 100%; max-width: 650px; display: flex; gap: 8px; margin-bottom: 12px; }
+        .tab-btn { background-color: #111827; border: 1px solid #1f2937; color: #9ca3af; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; position: relative; }
+        .tab-btn.active { background-color: #1d4ed8; border-color: #3b82f6; color: #fff; }
+        .tab-btn .badge { font-size: 9px; background: #374151; color: #9ca3af; padding: 2px 6px; border-radius: 6px; margin-left: 4px; font-weight: 400; }
         
         .search-box { width: 100%; max-width: 650px; display: flex; gap: 10px; margin-bottom: 25px; }
         .search-box input { flex: 1; padding: 14px 18px; background-color: #111827; border: 1px solid #374151; border-radius: 12px; color: #fff; font-size: 16px; outline: none; transition: border 0.2s; }
         .search-box input:focus { border-color: #38bdf8; }
-        .search-box button { padding: 0 24px; background-color: #0ea5e9; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .search-box button:hover { background-color: #0284c7; }
+        .search-box button { padding: 0 24px; background-color: #1d4ed8; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .search-box button:hover { background-color: #1e40af; }
         
         .results-container { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 15px; }
         
@@ -54,15 +60,48 @@
         <div class="logo"><i class="fa-solid fa-fingerprint"></i> parmak izi</div>
     </div>
 
+    <!-- Sekmeler -->
+    <div class="search-tabs">
+        <button class="tab-btn active" onclick="switchTab('username', this)">
+            <i class="fa-solid fa-at"></i> Kullanıcı adı
+        </button>
+        <button class="tab-btn" onclick="switchTab('email', this)">
+            <i class="fa-solid fa-envelope"></i> E-posta
+        </button>
+        <button class="tab-btn" onclick="switchTab('phone', this)">
+            <i class="fa-solid fa-phone"></i> Telefon <span class="badge">Yakında gelecek</span>
+        </button>
+    </div>
+
     <div class="search-box">
-        <input type="text" id="usernameInput" placeholder="Kullanıcı adı girin..." />
-        <button onclick="searchProfiles()">Ara</button>
+        <input type="text" id="usernameInput" placeholder="Kullanıcı adınızı girin..." />
+        <button onclick="searchProfiles()"><i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
     <div id="loader" class="loader"><i class="fa-solid fa-spinner"></i> Dijital ayak izleri taranıyor...</div>
     <div id="results" class="results-container"></div>
 
     <script>
+        let currentMode = 'username';
+
+        function switchTab(mode, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentMode = mode;
+            
+            const input = document.getElementById('usernameInput');
+            if (mode === 'username') {
+                input.placeholder = "Kullanıcı adınızı girin...";
+                input.disabled = false;
+            } else if (mode === 'email') {
+                input.placeholder = "E-posta adresini girin...";
+                input.disabled = false;
+            } else if (mode === 'phone') {
+                input.placeholder = "Telefon araması yakında aktif olacak...";
+                input.disabled = true;
+            }
+        }
+
         const brandStyles = {
             'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
             'TikTok': { color: '#fe2752', bg: '#000000' },
@@ -73,23 +112,31 @@
         };
 
         async function searchProfiles() {
-            const username = document.getElementById('usernameInput').value.trim();
+            const query = document.getElementById('usernameInput').value.trim();
             const resultsDiv = document.getElementById('results');
-            const loader = document.getElementById('loader');
+            const loader = data => data; // placeholder
             
-            if (!username) return alert('Lütfen bir kullanıcı adı girin!');
+            if (currentMode === 'phone') {
+                alert('Telefon ile arama özelliği yakında eklenecektir!');
+                return;
+            }
+
+            if (!query) {
+                alert('Lütfen bir arama değeri girin!');
+                return;
+            }
 
             resultsDiv.innerHTML = '';
-            loader.style.display = 'block';
+            document.getElementById('loader').style.display = 'block';
 
             try {
-                const response = await fetch(`/api/search?username=${encodeURIComponent(username)}`);
+                const response = await fetch(`/api/search?username=${encodeURIComponent(query)}`);
                 const data = await response.json();
                 
-                loader.style.display = 'none';
+                document.getElementById('loader').style.display = 'none';
 
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Hiçbir aktif profil bulunamadı.</div>';
+                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px;">Hiçbir aktif kayıt bulunamadı.</div>';
                     return;
                 }
 
@@ -111,7 +158,7 @@
                             </div>
                             <div class="profile-info">
                                 <div class="profile-name">${item.displayName}</div>
-                                <div class="profile-handle">@${username}</div>
+                                <div class="profile-handle">@${query}</div>
                             </div>
                         </div>
 
@@ -139,7 +186,7 @@
                 });
 
             } catch (err) {
-                loader.style.display = 'none';
+                document.getElementById('loader').style.display = 'none';
                 alert('Bir hata oluştu.');
             }
         }
