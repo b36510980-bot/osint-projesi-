@@ -3,31 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parmak İzi - Profesyonel OSINT Paneli</title>
+    <title>Parmak İzi - Dijital Ayak İzi Paneli</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .header { width: 100%; max-width: 700px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 25px; }
+        .header { width: 100%; max-width: 650px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 25px; }
         .logo { font-size: 20px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-        .search-box { width: 100%; max-width: 700px; display: flex; gap: 10px; margin-bottom: 30px; }
+        
+        .search-box { width: 100%; max-width: 650px; display: flex; gap: 10px; margin-bottom: 25px; }
         .search-box input { flex: 1; padding: 14px 18px; background-color: #111827; border: 1px solid #374151; border-radius: 12px; color: #fff; font-size: 16px; outline: none; transition: border 0.2s; }
         .search-box input:focus { border-color: #38bdf8; }
         .search-box button { padding: 0 24px; background-color: #0ea5e9; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .search-box button:hover { background-color: #0284c7; }
         
-        .results-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 15px; }
-        .card { background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 16px; transition: transform 0.2s, border-color 0.2s; }
-        .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
-        .platform-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .card-info { flex: 1; }
-        .platform-name { font-size: 14px; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-        .profile-name { font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px; }
-        .profile-handle { font-size: 14px; color: #6b7280; }
-        .visit-btn { background: #1f2937; color: #fff; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s; border: 1px solid #374151; }
-        .visit-btn:hover { background: #374151; }
+        .results-container { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 15px; }
         
+        /* Fingerprint Kart Tasarımı */
+        .card { background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.2s; }
+        .card:hover { border-color: #374151; }
+        
+        .card-top { display: flex; align-items: center; justify-content: space-between; }
+        .platform-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; }
+        .platform-badge i { font-size: 16px; }
+        
+        .profile-main { display: flex; align-items: center; gap: 14px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 18px; font-weight: 700; color: #fff; }
+        .profile-handle { font-size: 14px; color: #9ca3af; margin-top: 2px; }
+        
+        .stats-row { font-size: 13px; color: #9ca3af; display: flex; gap: 15px; border-top: 1px solid #1f2937; padding-top: 10px; }
+        .date-row { font-size: 13px; color: #6b7280; display: flex; flex-direction: column; gap: 4px; }
+        
+        /* Daha Fazla Alan Accordion */
+        .accordion-btn { background: none; border: none; color: #38bdf8; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 6px; padding-top: 5px; }
+        .extra-fields { display: none; background: #0d1322; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; margin-top: 5px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .extra-field-item { display: flex; justify-content: space-between; color: #d1d5db; }
+        .extra-field-item span:first-child { color: #9ca3af; font-weight: 500; }
+        
+        .visit-btn { background: #1f2937; color: #fff; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500; border: 1px solid #374151; transition: background 0.2s; }
+        .visit-btn:hover { background: #374151; color: #38bdf8; }
+
         .loader { display: none; text-align: center; color: #9ca3af; margin: 40px 0; font-size: 16px; }
         .loader i { animation: spin 1s linear infinite; margin-right: 8px; color: #38bdf8; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -48,16 +66,13 @@
     <div id="results" class="results-container"></div>
 
     <script>
-        // Platformların orijinal uygulama simgesi arka planları ve renk uyumları
         const brandStyles = {
-            'Instagram': { bg: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', textCol: '#E1306C' },
-            'TikTok': { bg: '#000000', color: '#fff', textCol: '#fe2752' },
-            'Snapchat': { bg: '#FFFC00', color: '#000', textCol: '#FFFC00' },
-            'GitHub': { bg: '#24292e', color: '#fff', textCol: '#ffffff' },
-            'Reddit': { bg: '#FF4500', color: '#fff', textCol: '#FF4500' },
-            'Twitter / X': { bg: '#000000', color: '#fff', textCol: '#1d9bf0' },
-            'Pinterest': { bg: '#E60023', color: '#fff', textCol: '#E60023' },
-            'Roblox': { bg: '#1f2937', color: '#fff', textCol: '#e0e0e0' }
+            'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
+            'TikTok': { color: '#fe2752', bg: '#000000' },
+            'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
+            'GitHub': { color: '#ffffff', bg: '#24292e' },
+            'Pinterest': { color: '#E60023', bg: '#E60023' },
+            'Twitter / X': { color: '#1d9bf0', bg: '#000000' }
         };
 
         async function searchProfiles() {
@@ -81,18 +96,48 @@
                     return;
                 }
 
-                data.forEach(item => {
-                    const style = brandStyles[item.platform] || { bg: '#1f2937', color: '#38bdf8', textCol: '#38bdf8' };
+                data.forEach((item, index) => {
+                    const style = brandStyles[item.platform] || { color: '#38bdf8', bg: '#1f2937' };
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
-                        <div class="platform-icon" style="background: ${style.bg}; color: ${style.color};"><i class="${item.icon}"></i></div>
-                        <div class="card-info">
-                            <div class="platform-name" style="color: ${style.textCol};">${item.platform} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></div>
-                            <div class="profile-name">@${username}</div>
-                            <div class="profile-handle">Aktif Profil</div>
+                        <div class="card-top">
+                            <div class="platform-badge" style="color: ${style.color};">
+                                <i class="${item.icon}"></i> ${item.platform} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i>
+                            </div>
+                            <a href="${item.url}" target="_blank" class="visit-btn">Profili Gör</a>
                         </div>
-                        <a href="${item.url}" target="_blank" class="visit-btn">Profili Gör</a>
+                        
+                        <div class="profile-main">
+                            <div class="avatar" style="background: ${style.bg}; color: ${item.platform === 'Snapchat' ? '#000' : '#fff'};">
+                                <i class="${item.icon}"></i>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-name">${item.displayName}</div>
+                                <div class="profile-handle">@${username}</div>
+                            </div>
+                        </div>
+
+                        <div class="stats-row">
+                            <span><i class="fa-solid fa-chart-bar"></i> ${item.stats}</span>
+                        </div>
+
+                        <div class="date-row">
+                            <div>Katılım tarihi: ${item.joined}</div>
+                            <div>Son aktivite: ${item.lastActive}</div>
+                        </div>
+
+                        <div>
+                            <button class="accordion-btn" onclick="toggleExtra(${index})">
+                                <i class="fa-solid fa-play" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> + 4 daha fazla alan
+                            </button>
+                            <div class="extra-fields" id="extra-${index}" style="display: none;">
+                                <div class="extra-field-item"><span>E-posta:</span> <b>${item.email}</b></div>
+                                <div class="extra-field-item"><span>Telefon Numarası:</span> <b style="color: #38bdf8;">${item.phone}</b></div>
+                                <div class="extra-field-item"><span>Durum:</span> <span style="color: #10b981;">Doğrulanmış Profil</span></div>
+                                <div class="extra-field-item"><span>Güven Skoru:</span> <span style="color: #f59e0b;">Yüksek (%94)</span></div>
+                            </div>
+                        </div>
                     `;
                     resultsDiv.appendChild(card);
                 });
@@ -100,6 +145,18 @@
             } catch (err) {
                 loader.style.display = 'none';
                 alert('Bir hata oluştu.');
+            }
+        }
+
+        function toggleExtra(index) {
+            const extraDiv = document.getElementById(`extra-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            if (extraDiv.style.display === 'none') {
+                extraDiv.style.display = 'flex';
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                extraDiv.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
             }
         }
     </script>
