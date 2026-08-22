@@ -137,8 +137,14 @@
             font-weight: 600;
             text-transform: uppercase;
             font-family: 'JetBrains Mono', monospace;
-            color: #9ca3af;
+            color: #e5e7eb;
         }
+
+        /* Platforma özel gerçek marka renkleri */
+        .fa-github { color: #ffffff; }
+        .fa-youtube { color: #FF0000; }
+        .fa-whatsapp { color: #25D366; }
+        .fa-envelope-circle-check { color: #1e8cbe; }
 
         .profile-main {
             display: flex;
@@ -158,37 +164,6 @@
             border-top: 1px solid #1f2937;
             padding-top: 10px;
         }
-
-        .accordion-btn {
-            background: none;
-            border: none;
-            color: #9ca3af;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .accordion-btn:hover { color: #fff; }
-
-        .extra-fields {
-            display: none;
-            background-color: #0b0f19;
-            border: 1px solid #1f2937;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 6px;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .extra-field-item { display: flex; flex-direction: column; gap: 3px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
-        .extra-field-item .label { color: #9ca3af; }
-        .extra-field-item .val { color: #fff; }
-        .extra-field-item .info { color: #6b7280; font-size: 11px; }
 
         .visit-btn {
             background-color: #1f2937;
@@ -221,7 +196,7 @@
 <body>
 
     <div class="header">
-        <div class="logo"><i class="fa-solid fa-shield-halved"></i> osint // records</div>
+        <div class="logo"><i class="fa-solid fa-shield-halved"></i> osint // verified records</div>
     </div>
 
     <div class="search-tabs">
@@ -241,7 +216,7 @@
         <button onclick="searchProfiles()"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
-    <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Kayıtlar taranıyor...</div>
+    <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Canlı sorgu yapılıyor...</div>
     <div id="results" class="results-container"></div>
 
     <script>
@@ -285,11 +260,11 @@
                 loader.style.display = 'none';
 
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px; font-family: JetBrains Mono;">Kayıt bulunamadı.</div>';
+                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px; font-family: JetBrains Mono;">Doğrulanmış canlı kayıt bulunamadı.</div>';
                     return;
                 }
 
-                data.forEach((item, index) => {
+                data.forEach((item) => {
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
@@ -307,26 +282,7 @@
                         </div>
 
                         <div class="stats-row">
-                            <span><i class="fa-solid fa-chart-bar" style="color:#6b7280;"></i> ${item.stats}</span>
-                        </div>
-
-                        <div>
-                            <button class="accordion-btn" onclick="toggleExtra(${index})">
-                                <i class="fa-solid fa-chevron-right" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> + ek alanlar
-                            </button>
-                            <div class="extra-fields" id="extra-${index}">
-                                <div class="extra-field-item">
-                                    <span class="label">Kullanıcı kimliği:</span> 
-                                    <span class="val">${item.userId}</span>
-                                    <span class="info">${item.userIdInfo}</span>
-                                </div>
-                                <div class="extra-field-item" style="margin-top: 4px;">
-                                    <span class="label">E-posta:</span> <span class="val">${item.email}</span>
-                                </div>
-                                <div class="extra-field-item">
-                                    <span class="label">Telefon:</span> <span class="val">${item.phone}</span>
-                                </div>
-                            </div>
+                            <span><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ${item.stats}</span>
                         </div>
                     `;
                     resultsDiv.appendChild(card);
@@ -337,18 +293,7 @@
                 alert('Bağlantı hatası oluştu.');
             }
         }
-
-        function toggleExtra(index) {
-            const extraDiv = document.getElementById(`extra-${index}`);
-            const icon = document.getElementById(`icon-${index}`);
-            if (extraDiv.style.display === 'flex') {
-                extraDiv.style.display = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                extraDiv.style.display = 'flex';
-                icon.style.transform = 'rotate(90deg)';
-            }
-        }
     </script>
 </body>
 </html>
+
