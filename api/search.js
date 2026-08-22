@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     { name: 'GitHub', url: `https://github.com/${username}`, icon: 'fa-brands fa-github' },
     { name: 'Reddit', url: `https://www.reddit.com/user/${username}`, icon: 'fa-brands fa-reddit' },
     { name: 'Twitter / X', url: `https://twitter.com/${username}`, icon: 'fa-brands fa-x-twitter' },
-    { name: 'Pinterest', url: `https://tr.pinterest.com/${username}/`, icon: 'fa-brands fa-pinterest' },
+    { name: 'Pinterest', url: `https://www.pinterest.com/${username}/`, icon: 'fa-brands fa-pinterest' },
     { name: 'Roblox', url: `https://www.roblox.com/user.aspx?username=${username}`, icon: 'fa-solid fa-cube' }
   ];
 
