@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+Export default async function handler(req, res) {
   const { query, type } = req.query;
   
   if (!query) {
@@ -69,6 +69,7 @@ export default async function handler(req, res) {
     { platform: 'Instagram', url: `https://www.instagram.com/${query}/`, icon: 'fa-brands fa-instagram', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
     { platform: 'TikTok', url: `https://www.tiktok.com/@${query}`, icon: 'fa-brands fa-tiktok', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
     { platform: 'Snapchat', url: `https://www.snapchat.com/add/${query}`, icon: 'fa-brands fa-snapchat', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
+    { platform: 'YouTube', url: `https://www.youtube.com/@${query}`, icon: 'fa-brands fa-youtube', displayName: query, stats: 'Kanal Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
     { platform: 'GitHub', url: `https://github.com/${query}`, icon: 'fa-brands fa-github', displayName: query, stats: 'Kod Depoları', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
     { platform: 'Pinterest', url: `https://www.pinterest.com/${query}/`, icon: 'fa-brands fa-pinterest', displayName: query, stats: 'Pano Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' },
     { platform: 'Twitter / X', url: `https://twitter.com/${query}`, icon: 'fa-brands fa-x-twitter', displayName: query, stats: 'Profil Taraması', lastActive: 'Kontrol Et', email: 'Gizli', phone: 'Gizli' }
