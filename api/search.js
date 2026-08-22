@@ -60,36 +60,41 @@ export default async function handler(req, res) {
     ]);
   }
 
-  // 3. Kullanıcı Adı Sorgusu (CANLI KONTROLLER)
+  // 3. Kullanıcı Adı Sorgusu
   if (type === 'username') {
     
-    // YouTube
-    try {
-      const ytRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/@${cleanQuery}&format=json`, { headers: fetchHeaders });
-      if (ytRes.ok) {
-        const ytData = await ytRes.json();
-        results.push({
-          platform: 'YouTube',
-          url: `https://www.youtube.com/@${cleanQuery}`,
-          icon: 'fa-brands fa-youtube',
-          displayName: ytData.author_name || cleanQuery,
-          stats: 'Kanal Bulundu',
-          lastActive: 'Kanala Git',
-          email: 'Gizli',
-          phone: 'Gizli'
-        });
-      }
-    } catch (e) {}
+    // --- KONTROLSÜZ EKLENENLER (Her zaman görünür) ---
+    results.push({
+      platform: 'Instagram',
+      url: `https://www.instagram.com/${cleanQuery}/`,
+      icon: 'fa-brands fa-instagram',
+      displayName: cleanQuery,
+      stats: 'Profil Linki',
+      lastActive: 'Kontrol Et',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
 
-    // NGL (Gizli Soru Uygulaması)
+    results.push({
+      platform: 'YouTube',
+      url: `https://www.youtube.com/@${cleanQuery}`,
+      icon: 'fa-brands fa-youtube',
+      displayName: cleanQuery,
+      stats: 'Kanal Linki',
+      lastActive: 'Kanala Git',
+      email: 'Gizli',
+      phone: 'Gizli'
+    });
+    // --------------------------------------------------
+
+    // NGL (Gizli Soru Uygulaması) - Canlı Kontrol
     try {
       const nglRes = await fetch(`https://ngl.link/${cleanQuery}`, { headers: fetchHeaders });
-      // NGL genellikle hesap yoksa 404 döndürür
       if (nglRes.ok) {
         results.push({
           platform: 'NGL',
           url: `https://ngl.link/${cleanQuery}`,
-          icon: 'fa-solid fa-link', // NGL'nin özel ikonu olmadığı için link ikonu kullanıldı
+          icon: 'fa-solid fa-link', 
           displayName: cleanQuery,
           stats: 'Soru Sayfası Bulundu',
           lastActive: 'Soru Sor',
@@ -99,7 +104,7 @@ export default async function handler(req, res) {
       }
     } catch (e) {}
 
-    // Snapchat
+    // Snapchat - Canlı Kontrol
     try {
       const snapRes = await fetch(`https://www.snapchat.com/add/${cleanQuery}`, { headers: fetchHeaders });
       if (snapRes.ok) {
@@ -116,24 +121,7 @@ export default async function handler(req, res) {
       }
     } catch (e) {}
 
-    // Instagram (Bot korumasına takılma ihtimali var)
-    try {
-      const igRes = await fetch(`https://www.instagram.com/${cleanQuery}/`, { headers: fetchHeaders });
-      if (igRes.ok) {
-        results.push({
-          platform: 'Instagram',
-          url: `https://www.instagram.com/${cleanQuery}/`,
-          icon: 'fa-brands fa-instagram',
-          displayName: cleanQuery,
-          stats: 'Profil Olabilir',
-          lastActive: 'Kontrol Et',
-          email: 'Gizli',
-          phone: 'Gizli'
-        });
-      }
-    } catch (e) {}
-
-    // TikTok (Bot korumasına takılma ihtimali var)
+    // TikTok - Canlı Kontrol
     try {
       const tkRes = await fetch(`https://www.tiktok.com/@${cleanQuery}`, { headers: fetchHeaders });
       if (tkRes.ok) {
@@ -150,7 +138,7 @@ export default async function handler(req, res) {
       }
     } catch (e) {}
 
-    // GitHub
+    // GitHub - Canlı Kontrol
     try {
       const ghRes = await fetch(`https://api.github.com/users/${cleanQuery}`, { headers: fetchHeaders });
       if (ghRes.ok) {
@@ -169,6 +157,6 @@ export default async function handler(req, res) {
     } catch (e) {}
   }
 
-  // Sadece doğrulanmış, gerçekten var olan (veya bot engelini aşan) sonuçları döndür
+  // Sonuçları döndür
   res.status(200).json(results);
 }
