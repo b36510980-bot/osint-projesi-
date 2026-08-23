@@ -7,28 +7,38 @@ module.exports = async (req, res) => {
   }
 
   const cleanMail = mail.trim().toLowerCase();
-  const domain = cleanMail.split('@')[1];
+  const results = [];
 
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json"
+  };
+
+  // 1. Spotify Gerçek Kayıt API Sorgusu (Holehe mantığı)
   try {
-    // Gerçek bir IP ve E-posta güvenlik/tehdit istihbarat API'sine bağlanıyoruz
-    const response = `https://apilayer.net/api/check?access_key=free&email=${encodeURIComponent(cleanMail)}`;
-    
-    // Alternatif olarak domain MX (mail sunucu) kayıtlarını ve gerçek sızıntı durumunu simüle etmeden 
-    // doğrudan domainin aktiflik durumunu sorgulayan gerçek bir protokol çalıştırıyoruz:
-    const dnsCheck = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
-    const dnsData = await dnsCheck.json();
-    
-    const mailServerVarMi = dnsData.Answer && dnsData.Answer.length > 0;
-
-    return res.status(200).json({
-      mail: cleanMail,
-      domain: domain,
-      gercek_sunucu: mailServerVarMi,
-      mesaj: mailServerVarMi ? "Mail sunucusu (MX) aktif ve doğrulanabilir." : "Bu domain için mail altyapısı bulunamadı.",
-      guvenlik_notu: "Gerçek DNS ve MX kayıtları üzerinden doğrulandı."
-    });
-
-  } catch (error) {
-    return res.status(500).json({ error: "Gerçek zamanlı sunucu sorgusu başarısız oldu." });
+    const spotifyRes = await fetch(`https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email=${encodeURIComponent(cleanMail)}`, { headers });
+    const spotifyData = await spotifyRes.json();
+    // Spotify status 20 veya reason EMAIL_EXISTS ise mail sistemde kayıtlıdır
+    const exists = spotifyData.status === 20 || spotifyData.reason === "EMAIL_EXISTS";
+    results.push({ platform: "Spotify", exists: exists });
+  } catch (e) {
+    results.push({ platform: "Spotify", exists: false });
   }
+
+  // 2. Imgur Gerçek E-posta Sorgu API'si
+  try {
+    const imgurRes = await fetch(`https://api.imgur.com/account/v1/emails/${encodeURIComponent(cleanMail)}`, { headers });
+    const imgurData = await imgurRes.json();
+    const exists = imgurData.data && imgurData.data.exists === true;
+    results.push({ platform: "Imgur", exists: exists });
+  } catch (e) {
+    results.push({ platform: "Imgur", exists: false });
+  }
+
+  // 3. Macrometa / Diğer public check API'leri eklenebilir
+
+  return res.status(200).json({
+    mail: cleanMail,
+    results: results
+  });
 };
