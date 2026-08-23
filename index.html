@@ -1,378 +1,163 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parmak İzi - OSINT İstihbarat Paneli</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #0b0d11;
-      --card-bg: #141820;
-      --input-bg: #1c212c;
-      --accent-blue: #2563eb;
-      --accent-hover: #1d4ed8;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --border-color: #2a303d;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 15px;
-    }
-
-    /* Navbar */
-    header {
-      width: 100%;
-      max-width: 800px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-      margin-bottom: 30px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    .logo i {
-      color: var(--accent-blue);
-      font-size: 1.6rem;
-    }
-
-    .logo span {
-      color: var(--accent-blue);
-    }
-
-    /* Hero */
-    .hero {
-      width: 100%;
-      max-width: 800px;
-      text-align: left;
-      margin-bottom: 25px;
-    }
-
-    .hero h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 15px;
-    }
-
-    .hero h1 .highlight {
-      color: #3b82f6;
-      -webkit-text-stroke: 1px #3b82f6;
-    }
-
-    .hero p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    /* Stats */
-    .stats {
-      width: 100%;
-      max-width: 800px;
-      display: flex;
-      gap: 25px;
-      margin-bottom: 30px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .stats strong {
-      color: var(--text-main);
-      font-size: 1.1rem;
-    }
-
-    /* Search Box Container */
-    .search-container {
-      width: 100%;
-      max-width: 800px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Tab Buttons */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-    }
-
-    .tab-btn {
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: var(--accent-blue);
-      color: white;
-      border-color: var(--accent-blue);
-    }
-
-    /* Input Wrapper */
-    .input-box {
-      display: flex;
-      gap: 10px;
-      position: relative;
-    }
-
-    .input-box input {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px 16px 16px 45px;
-      color: white;
-      font-size: 0.95rem;
-      outline: none;
-    }
-
-    .input-box input:focus {
-      border-color: var(--accent-blue);
-    }
-
-    .input-box .search-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-
-    .submit-btn {
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 0 22px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-
-    .submit-btn:hover {
-      background: var(--accent-hover);
-    }
-
-    /* Results */
-    .results {
-      margin-top: 20px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .result-card {
-      background: var(--input-bg);
-      border: 1px solid var(--border-color);
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-    }
-
-    .result-card a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-
-    .status-found {
-      color: #10b981;
-      font-weight: bold;
-    }
-
-    .status-not {
-      color: #ef4444;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parmak İzi - Gerçek OSINT Taraması</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --accent-color: #3b82f6;
+            --border-color: #1f2937;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: var(--border-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .tab-btn.active {
+            background: var(--accent-color);
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+        }
+        button.submit-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .result-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .status-not { color: #ef4444; }
+        a { color: var(--accent-color); text-decoration: none; }
+    </style>
 </head>
 <body>
-
-  <header>
-    <div class="logo">
-      <i class="fa-solid fa-fingerprint"></i>
-      parmak <span>izi</span>
-    </div>
-    <i class="fa-solid fa-bars" style="font-size: 1.2rem; cursor: pointer;"></i>
-  </header>
-
-  <section class="hero">
-    <h1>
-      <span class="highlight">700'den fazla</span><br>
-      platformda herkese açık profilleri arayın.
-    </h1>
-    <p>Kullanıcı adını, e-posta adresini, IP konumunu veya görselini girin. Saniyeler içinde dijital ayak izini sorgulayın.</p>
-  </section>
-
-  <section class="stats">
-    <div><strong>700+</strong> platformlar</div>
-    <div><strong>10 saniye</strong> ortalama arama</div>
-    <div><strong>0 dolar</strong> başlamak için</div>
-  </section>
-
-  <div class="search-container">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="setTab('user', this)"><i class="fa-solid fa-at"></i> Kullanıcı adı</button>
-      <button class="tab-btn" onclick="setTab('email', this)"><i class="fa-regular fa-envelope"></i> E-posta</button>
-      <button class="tab-btn" onclick="setTab('ip', this)"><i class="fa-solid fa-network-wired"></i> IP Analizi</button>
-      <button class="tab-btn" onclick="setTab('photo', this)"><i class="fa-regular fa-image"></i> Fotoğraf</button>
+    <div class="container">
+        <h2><i class="fa-solid fa-fingerprint"></i> parmak izi</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="setTab('user', this)">Kullanıcı Adı (Sherlock)</button>
+            <button class="tab-btn" onclick="setTab('email', this)">E-Posta (Holehe)</button>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Sorgulanacak kullanıcı adını girin...">
+            <button class="submit-btn" onclick="performSearch()"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div id="resultBox"></div>
     </div>
 
-    <div class="input-box">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      <input type="text" id="targetInput" placeholder="Kullanıcı adınızı girin...">
-      <button class="submit-btn" onclick="executeOSINT()"><i class="fa-solid fa-arrow-right"></i></button>
-    </div>
+    <script>
+        let currentTab = 'user';
 
-    <div class="results" id="resultsBox"></div>
-  </div>
-
-  <script>
-    let currentTab = 'user';
-
-    function setTab(tab, element) {
-      currentTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      element.classList.add('active');
-
-      const input = document.getElementById('targetInput');
-      const box = document.getElementById('resultsBox');
-      box.style.display = 'none';
-
-      if(tab === 'user') input.placeholder = "Kullanıcı adınızı girin...";
-      else if(tab === 'email') input.placeholder = "E-posta adresini girin (ör: hedef@gmail.com)...";
-      else if(tab === 'ip') input.placeholder = "IP adresini girin (ör: 8.8.8.8)...";
-      else if(tab === 'photo') input.placeholder = "Fotoğraf URL adresini yapıştırın...";
-    }
-
-    async function executeOSINT() {
-      const query = document.getElementById('targetInput').value.trim();
-      const box = document.getElementById('resultsBox');
-      if (!query) return alert("Lütfen bir değer girin!");
-
-      box.style.display = 'flex';
-      box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Gerçek zamanlı veriler taranıyor...</div>`;
-
-      if (currentTab === 'ip') {
-        try {
-          const res = await fetch(`https://ipapi.co/${query}/json/`);
-          const data = await res.json();
-          if(data.error) throw new Error();
-          
-          box.innerHTML = `
-            <div class="result-card">
-              <h4>📍 IP İstihbarat Sonucu (${data.ip})</h4>
-              <p style="margin-top:8px;"><strong>Ülke:</strong> ${data.country_name} (${data.country_code})</p>
-              <p><strong>Şehir / Bölge:</strong> ${data.city} / ${data.region}</p>
-              <p><strong>İnternet Sağlayıcı (ISP):</strong> ${data.org}</p>
-              <p><strong>Posta Kodu:</strong> ${data.postal || 'Bilinmiyor'}</p>
-              <p><strong>Harita:</strong> <a href="https://www.google.com/maps?q=${data.latitude},${data.longitude}" target="_blank">Google Maps'te Göster</a></p>
-            </div>
-          `;
-        } catch {
-          box.innerHTML = `<div class="result-card status-not">IP bilgisi alınamadı veya geçersiz IP adresi.</div>`;
+        function setTab(tab, btn) {
+            currentTab = tab;
+            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('searchInput').placeholder = tab === 'user' ? 'Kullanıcı adı girin...' : 'E-posta adresi girin...';
         }
-      } 
-      else if (currentTab === 'user') {
-        const platforms = [
-          { name: 'GitHub', url: `https://github.com/${query}` },
-          { name: 'Instagram', url: `https://instagram.com/${query}` },
-          { name: 'X / Twitter', url: `https://x.com/${query}` },
-          { name: 'Reddit', url: `https://reddit.com/user/${query}` },
-          { name: 'Telegram', url: `https://t.me/${query}` },
-          { name: 'TikTok', url: `https://tiktok.com/@${query}` }
-        ];
 
-        let html = `<h4>🔍 '${query}' Kullanıcı Adı Tarama Sonuçları:</h4>`;
-        platforms.forEach(p => {
-          html += `
-            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
-              <span><strong>${p.name}</strong></span>
-              <a href="${p.url}" target="_blank">Profili Kontrol Et <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            </div>
-          `;
-        });
-        box.innerHTML = html;
-      }
-      else if (currentTab === 'email') {
-        box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Node.js sunucusuna bağlanılıyor ve e-posta analiz ediliyor...</div>`;
-        
-        try {
-          // Vercel'deki kendi Node.js API'mize istek atıyoruz
-          const res = await fetch(`/api/email?mail=${encodeURIComponent(query)}`);
-          const data = await res.json();
-          
-          if(data.error) throw new Error(data.error);
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            const box = document.getElementById('resultBox');
+            if (!query) return;
 
-          // Gelen sonuçları sitemizin içine yazdırıyoruz
-          box.innerHTML = `
-            <div class="result-card">
-              <h4>✉️ E-Posta Analiz Raporu</h4>
-              <p style="margin-top:8px;"><strong>Hedef Mail:</strong> ${data.mail}</p>
-              <p><strong>Sağlayıcı (Domain):</strong> ${data.domain}</p>
-              <p><strong>Gerçek Bir Mail mi?:</strong> <span style="color:${data.gecerli_mi ? '#10b981' : '#ef4444'}; font-weight:bold;">${data.gecerli_mi ? 'Evet, aktif.' : 'Hayır, sahte veya kapatılmış.'}</span></p>
-              <p><strong>Spam/Risk Durumu:</strong> ${data.spam_mi ? 'Yüksek Risk (Spam)' : 'Temiz'}</p>
-              <p><strong>Hesap Türü:</strong> ${data.kurumsal_mi ? 'Şirket / Özel' : 'Bireysel (Ücretsiz)'}</p>
-            </div>
-          `;
-        } catch(err) {
-          box.innerHTML = `<div class="result-card status-not">Hata: E-posta analiz edilemedi veya backend API bulunamadı.</div>`;
+            if (currentTab === 'user') {
+                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Sherlock gerçek platformları tarıyor...</div>`;
+                try {
+                    const res = await fetch(`/api/search?username=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+
+                    let html = `<h4>🔍 Sherlock Kullanıcı Raporu (${data.username}):</h4>`;
+                    data.results.forEach(p => {
+                        html += `
+                            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
+                                <span><strong>${p.platform}</strong></span>
+                                <div>
+                                    <span style="margin-right: 15px; font-weight: bold; color: ${p.exists ? '#10b981' : '#ef4444'};">
+                                        ${p.exists ? '● Bulundu (Aktif)' : '○ Bulunamadı'}
+                                    </span>
+                                    <a href="${p.url}" target="_blank">Git <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    box.innerHTML = html;
+                } catch (err) {
+                    box.innerHTML = `<div class="result-card status-not">Hata: Tarama gerçekleştirilemedi.</div>`;
+                }
+            } else if (currentTab === 'email') {
+                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Holehe e-posta platformlarını sorguluyor...</div>`;
+                try {
+                    const res = await fetch(`/api/email?mail=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+
+                    let html = `<h4>✉️ Holehe E-Posta Raporu (${data.mail}):</h4>`;
+                    data.results.forEach(p => {
+                        html += `
+                            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
+                                <span><strong>${p.platform}</strong></span>
+                                <span style="font-weight: bold; color: ${p.exists ? '#10b981' : '#ef4444'};">
+                                    ${p.exists ? '● Kayıtlı (Hesap Var)' : '○ Kayıt Bulunamadı'}
+                                </span>
+                            </div>
+                        `;
+                    });
+                    box.innerHTML = html;
+                } catch (err) {
+                    box.innerHTML = `<div class="result-card status-not">Hata: Holehe taraması gerçekleştirilemedi.</div>`;
+                }
+            }
         }
-      }
-      else if (currentTab === 'photo') {
-        const googleLensUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(query)}`;
-        const yandexUrl = `https://yandex.com/images/search?rpt=imageview&url=${encodeURIComponent(query)}`;
-
-        box.innerHTML = `
-          <div class="result-card">
-            <h4>🖼️ Tersine Görsel Arama Bağlantıları</h4>
-            <p style="margin-top:8px;">Görseliniz taranmaya hazır:</p>
-            <p style="margin-top:8px;">• <a href="${googleLensUrl}" target="_blank">Google Lens ile Yüz/Resim Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
-            <p>• <a href="${yandexUrl}" target="_blank">Yandex Görsel Veritabanında Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
-          </div>
-        `;
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
+
