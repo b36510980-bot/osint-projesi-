@@ -7,36 +7,37 @@ module.exports = async (req, res) => {
   }
 
   const cleanMail = mail.trim().toLowerCase();
-  const headers = { "User-Agent": "Mozilla/5.0" };
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json"
+  };
 
   const results = [];
 
-  // Spotify Kontrolü
+  // 1. Spotify Gerçek Kayıt API Sorgusu
   try {
     const spotifyRes = await fetch(`https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email=${encodeURIComponent(cleanMail)}`, { headers });
     const spotifyData = await spotifyRes.json();
-    results.push({ platform: "Spotify", exists: spotifyData.status === 20 || spotifyData.reason === "EMAIL_EXISTS" });
+    // Spotify status 20 veya reason EMAIL_EXISTS ise mail sistemde kayıtlıdır
+    const exists = spotifyData.status === 20 || spotifyData.reason === "EMAIL_EXISTS";
+    results.push({ platform: "Spotify", exists: exists });
   } catch (e) {
     results.push({ platform: "Spotify", exists: false });
   }
 
-  // Imgur Kontrolü
+  // 2. Imgur Gerçek E-posta Sorgu API'si
   try {
     const imgurRes = await fetch(`https://api.imgur.com/account/v1/emails/${encodeURIComponent(cleanMail)}`, { headers });
     const imgurData = await imgurRes.json();
-    results.push({ platform: "Imgur", exists: imgurData.data && imgurData.data.exists === true });
+    const exists = imgurData.data && imgurData.data.exists === true;
+    results.push({ platform: "Imgur", exists: exists });
   } catch (e) {
     results.push({ platform: "Imgur", exists: false });
   }
-
-  // Adobe Kontrolü (Simülasyon değil gerçek endpoint mantığı)
-  results.push({ platform: "Adobe", exists: cleanMail.includes("gmail") || cleanMail.includes("hotmail") });
-  results.push({ platform: "Canva", exists: true });
-  results.push({ platform: "Twitter", exists: false });
-  results.push({ platform: "Atlassian", exists: cleanMail.includes("gmail") });
 
   return res.status(200).json({
     mail: cleanMail,
     results: results
   });
 };
+
