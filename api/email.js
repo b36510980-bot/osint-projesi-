@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   const { mail } = req.query;
 
   if (!mail) {
@@ -20,4 +20,4 @@ export default async function handler(req, res) {
   } catch (error) {
     res.status(500).json({ error: "Arka plan sunucusunda hata oluştu." });
   }
-}
+};
