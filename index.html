@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parmak İzi - Gerçek OSINT Taraması</title>
+    <title>Parmak İzi - Gerçek OSINT Platformu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --text-color: #f3f4f6;
             --accent-color: #3b82f6;
             --border-color: #1f2937;
+            --muted-color: #9ca3af;
         }
         body {
             background-color: var(--bg-color);
@@ -21,76 +22,141 @@
             padding: 20px;
         }
         .container {
-            max-width: 700px;
-            margin: 40px auto;
+            max-width: 750px;
+            margin: 30px auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: var(--accent-color); }
+        .hero-title {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+        .hero-title span { color: var(--accent-color); }
+        .hero-desc {
+            color: var(--muted-color);
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: var(--muted-color);
+        }
+        .stats-row strong { color: var(--text-color); display: block; font-size: 18px; }
+        .search-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         .tab-btn {
-            background: var(--border-color);
-            color: var(--text-color);
-            border: none;
+            background: var(--bg-color);
+            color: var(--muted-color);
+            border: 1px solid var(--border-color);
             padding: 10px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
         }
         .tab-btn.active {
             background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
         }
         .search-box {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
         }
         input {
             flex: 1;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border-radius: 10px;
             outline: none;
+            font-size: 15px;
         }
+        input:focus { border-color: var(--accent-color); }
         button.submit-btn {
             background: var(--accent-color);
             color: white;
             border: none;
-            padding: 0 20px;
-            border-radius: 8px;
+            padding: 0 22px;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
         }
+        #resultBox { margin-top: 20px; }
         .result-card {
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border-radius: 10px;
             margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .status-not { color: #ef4444; }
-        a { color: var(--accent-color); text-decoration: none; }
+        a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2><i class="fa-solid fa-fingerprint"></i> parmak izi</h2>
-        <div class="tabs">
-            <button class="tab-btn active" onclick="setTab('user', this)">Kullanıcı Adı (Sherlock)</button>
-            <button class="tab-btn" onclick="setTab('email', this)">E-Posta (Holehe)</button>
+        <div class="header">
+            <div class="logo"><i class="fa-solid fa-fingerprint"></i> parmak <span>izi</span></div>
         </div>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Sorgulanacak kullanıcı adını girin...">
-            <button class="submit-btn" onclick="performSearch()"><i class="fa-solid fa-arrow-right"></i></button>
+
+        <div class="hero-title">Yüzlerce platformda herkese açık profilleri arayın.</div>
+        <div class="hero-desc">Kullanıcı adını, e-posta adresini, IP konumunu veya görselini girin. Saniyeler içinde dijital ayak izini sorgulayın.</div>
+
+        <div class="stats-row">
+            <div><strong>700+</strong> platformlar</div>
+            <div><strong>10 saniye</strong> ortalama arama</div>
+            <div><strong>0 dolar</strong> başlamak için</div>
         </div>
-        <div id="resultBox"></div>
+
+        <div class="search-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="setTab('user', this)"><i class="fa-solid fa-at"></i> Kullanıcı Adı</button>
+                <button class="tab-btn" onclick="setTab('email', this)"><i class="fa-solid fa-envelope"></i> E-Posta</button>
+                <button class="tab-btn" onclick="setTab('ip', this)"><i class="fa-solid fa-network-wired"></i> IP Analizi</button>
+                <button class="tab-btn" onclick="setTab('image', this)"><i class="fa-solid fa-image"></i> Görsel Arama</button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Sorgulanacak kullanıcı adını girin...">
+                <button class="submit-btn" onclick="performSearch()"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div id="resultBox"></div>
+        </div>
     </div>
 
     <script>
@@ -100,7 +166,14 @@
             currentTab = tab;
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('searchInput').placeholder = tab === 'user' ? 'Kullanıcı adı girin...' : 'E-posta adresi girin...';
+            
+            const placeholders = {
+                'user': 'Sorgulanacak kullanıcı adını girin...',
+                'email': 'Sorgulanacak e-posta adresini girin...',
+                'ip': 'IP adresini girin (örn: 8.8.8.8)...',
+                'image': 'Görsel URL adresini girin...'
+            };
+            document.getElementById('searchInput').placeholder = placeholders[tab];
         }
 
         async function performSearch() {
@@ -109,16 +182,16 @@
             if (!query) return;
 
             if (currentTab === 'user') {
-                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Sherlock gerçek platformları tarıyor...</div>`;
+                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Sherlock motoru platformları tarıyor...</div>`;
                 try {
                     const res = await fetch(`/api/search?username=${encodeURIComponent(query)}`);
                     const data = await res.json();
                     if (data.error) throw new Error(data.error);
 
-                    let html = `<h4>🔍 Sherlock Kullanıcı Raporu (${data.username}):</h4>`;
+                    let html = `<h4 style="margin-bottom:10px;">🔍 '${data.username}' Kullanıcı Raporu:</h4>`;
                     data.results.forEach(p => {
                         html += `
-                            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="result-card">
                                 <span><strong>${p.platform}</strong></span>
                                 <div>
                                     <span style="margin-right: 15px; font-weight: bold; color: ${p.exists ? '#10b981' : '#ef4444'};">
@@ -133,17 +206,18 @@
                 } catch (err) {
                     box.innerHTML = `<div class="result-card status-not">Hata: Tarama gerçekleştirilemedi.</div>`;
                 }
-            } else if (currentTab === 'email') {
-                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Holehe e-posta platformlarını sorguluyor...</div>`;
+            } 
+            else if (currentTab === 'email') {
+                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Holehe e-posta analizi yapılıyor...</div>`;
                 try {
                     const res = await fetch(`/api/email?mail=${encodeURIComponent(query)}`);
                     const data = await res.json();
                     if (data.error) throw new Error(data.error);
 
-                    let html = `<h4>✉️ Holehe E-Posta Raporu (${data.mail}):</h4>`;
+                    let html = `<h4 style="margin-bottom:10px;">✉️ '${data.mail}' E-Posta Raporu:</h4>`;
                     data.results.forEach(p => {
                         html += `
-                            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="result-card">
                                 <span><strong>${p.platform}</strong></span>
                                 <span style="font-weight: bold; color: ${p.exists ? '#10b981' : '#ef4444'};">
                                     ${p.exists ? '● Kayıtlı (Hesap Var)' : '○ Kayıt Bulunamadı'}
@@ -156,8 +230,34 @@
                     box.innerHTML = `<div class="result-card status-not">Hata: Holehe taraması gerçekleştirilemedi.</div>`;
                 }
             }
+            else if (currentTab === 'ip') {
+                box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> IP konumu analiz ediliyor...</div>`;
+                try {
+                    const res = await fetch(`https://ipapi.co/${query}/json/`);
+                    const data = await res.json();
+                    box.innerHTML = `
+                        <div class="result-card" style="display:block;">
+                            <h4 style="margin-bottom:10px;">🌐 IP Konum Raporu (${data.ip || query}):</h4>
+                            <p><strong>Ülke:</strong> ${data.country_name || 'Bilinmiyor'}</p>
+                            <p><strong>Şehir:</strong> ${data.city || 'Bilinmiyor'}</p>
+                            <p><strong>İnternet Sağlayıcısı (ISP):</strong> ${data.org || 'Bilinmiyor'}</p>
+                        </div>
+                    `;
+                } catch (e) {
+                    box.innerHTML = `<div class="result-card status-not">IP bilgisi alınamadı.</div>`;
+                }
+            }
+            else if (currentTab === 'image') {
+                box.innerHTML = `
+                    <div class="result-card" style="display:block; text-align:center; padding: 20px;">
+                        <h4>📸 Görsel Ters Arama Eşleşmesi</h4>
+                        <p style="color:var(--muted-color); margin: 10px 0;">Google Lens ve Yandex Görsel tarama yönlendirmesi:</p>
+                        <a href="https://images.google.com/searchbyimage?image_url=${encodeURIComponent(query)}" target="_blank" style="margin-right:15px;">Google Lens ile Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <a href="https://yandex.com/images/search?rpt=imageview&url=${encodeURIComponent(query)}" target="_blank">Yandex ile Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
 </html>
-
