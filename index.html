@@ -335,19 +335,29 @@
         box.innerHTML = html;
       }
       else if (currentTab === 'email') {
-        const domain = query.split('@')[1] || 'Bilinmiyor';
-        box.innerHTML = `
-          <div class="result-card">
-            <h4>✉️ E-Posta Analiz Raporu</h4>
-            <p style="margin-top:8px;"><strong>Hedef Mail:</strong> ${query}</p>
-            <p><strong>Domain Sağlayıcı:</strong> ${domain}</p>
-            <p><strong>Sızıntı (Breach) Durumu:</strong> <span class="status-found">Veritabanları Taranıyor</span></p>
-            <hr style="border-color:var(--border-color); margin:10px 0;">
-            <p>Aşağıdaki servislerden üyelik durumunu doğrulayabilirsiniz:</p>
-            <p>• <a href="https://haveibeenpwned.com/" target="_blank">HaveIBeenPwned Sızıntı Veritabanında Ara</a></p>
-            <p>• <a href="https://holehe.site/" target="_blank">Holehe OSINT Mail Taraması</a></p>
-          </div>
-        `;
+        box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Node.js sunucusuna bağlanılıyor ve e-posta analiz ediliyor...</div>`;
+        
+        try {
+          // Vercel'deki kendi Node.js API'mize istek atıyoruz
+          const res = await fetch(`/api/email?mail=${encodeURIComponent(query)}`);
+          const data = await res.json();
+          
+          if(data.error) throw new Error(data.error);
+
+          // Gelen sonuçları sitemizin içine yazdırıyoruz
+          box.innerHTML = `
+            <div class="result-card">
+              <h4>✉️ E-Posta Analiz Raporu</h4>
+              <p style="margin-top:8px;"><strong>Hedef Mail:</strong> ${data.mail}</p>
+              <p><strong>Sağlayıcı (Domain):</strong> ${data.domain}</p>
+              <p><strong>Gerçek Bir Mail mi?:</strong> <span style="color:${data.gecerli_mi ? '#10b981' : '#ef4444'}; font-weight:bold;">${data.gecerli_mi ? 'Evet, aktif.' : 'Hayır, sahte veya kapatılmış.'}</span></p>
+              <p><strong>Spam/Risk Durumu:</strong> ${data.spam_mi ? 'Yüksek Risk (Spam)' : 'Temiz'}</p>
+              <p><strong>Hesap Türü:</strong> ${data.kurumsal_mi ? 'Şirket / Özel' : 'Bireysel (Ücretsiz)'}</p>
+            </div>
+          `;
+        } catch(err) {
+          box.innerHTML = `<div class="result-card status-not">Hata: E-posta analiz edilemedi veya backend API bulunamadı.</div>`;
+        }
       }
       else if (currentTab === 'photo') {
         const googleLensUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(query)}`;
@@ -366,4 +376,3 @@
   </script>
 </body>
 </html>
-
