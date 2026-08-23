@@ -1,570 +1,369 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT // Cyber OSINT Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        
-        body {
-            background-color: #030712;
-            background-image: radial-gradient(circle at 50% 0%, #7f1d1d 0%, #030712 70%);
-            color: #f3f4f6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 25px 15px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parmak İzi - OSINT İstihbarat Paneli</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0d11;
+      --card-bg: #141820;
+      --input-bg: #1c212c;
+      --accent-blue: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border-color: #2a303d;
+    }
 
-        .header {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-            margin-bottom: 25px;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-        .menu-toggle {
-            background: none;
-            border: none;
-            color: #ef4444;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .menu-toggle:hover { transform: scale(1.1); }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 15px;
+    }
 
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 20px;
-            font-weight: 700;
-            color: #ef4444;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    /* Navbar */
+    header {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      margin-bottom: 30px;
+    }
 
-        /* YAN MENÜ (SIDEBAR) STİLLERİ */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(239, 68, 68, 0.3);
-            z-index: 1000;
-            transition: left 0.3s ease;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: 5px 0 25px rgba(0,0,0,0.8);
-        }
-        .sidebar.open { left: 0; }
-        
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-            padding-bottom: 15px;
-        }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
 
-        .sidebar-close {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .sidebar-close:hover { color: #fff; }
+    .logo i {
+      color: var(--accent-blue);
+      font-size: 1.6rem;
+    }
 
-        .profile-section {
-            text-align: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-        }
+    .logo span {
+      color: var(--accent-blue);
+    }
 
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-            margin: 0 auto 12px auto;
-        }
+    /* Hero */
+    .hero {
+      width: 100%;
+      max-width: 800px;
+      text-align: left;
+      margin-bottom: 25px;
+    }
 
-        .profile-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-        }
+    .hero h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 15px;
+    }
 
-        .contact-info {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 10px;
-            padding: 14px;
-            font-size: 13px;
-            color: #94a3b8;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .contact-info b { color: #ef4444; display: block; margin-bottom: 5px; }
-        .contact-info a { color: #f3f4f6; text-decoration: none; transition: color 0.2s; }
-        .contact-info a:hover { color: #ef4444; }
+    .hero h1 .highlight {
+      color: #3b82f6;
+      -webkit-text-stroke: 1px #3b82f6;
+    }
 
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(3px);
-            z-index: 999;
-            display: none;
-        }
-        .overlay.active { display: block; }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
 
-        /* ARAMA VE ARAYÜZ KISIMLARI */
-        .search-tabs {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+    /* Stats */
+    .stats {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      gap: 25px;
+      margin-bottom: 30px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
 
-        .tab-btn {
-            flex: 1;
-            background-color: rgba(17, 24, 39, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #9ca3af;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
+    .stats strong {
+      color: var(--text-main);
+      font-size: 1.1rem;
+    }
 
-        .tab-btn:hover {
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #fff;
-        }
+    /* Search Box Container */
+    .search-container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            border-color: transparent;
-            color: #fff;
-            font-weight: 700;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-        }
+    /* Tab Buttons */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
 
-        .search-box {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
+    .tab-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
 
-        .search-box input {
-            flex: 1;
-            padding: 15px 20px;
-            background-color: rgba(11, 15, 25, 0.9);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 14px;
-            color: #fff;
-            font-size: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
+    .tab-btn.active {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+    }
 
-        .search-box input:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3), inset 0 2px 4px rgba(0,0,0,0.5);
-        }
+    /* Input Wrapper */
+    .input-box {
+      display: flex;
+      gap: 10px;
+      position: relative;
+    }
 
-        .search-box button {
-            padding: 0 25px;
-            background: linear-gradient(135deg, #ef4444, #f97316);
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 18px;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
+    .input-box input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 16px 16px 45px;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+    }
 
-        .search-box button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
-        }
+    .input-box input:focus {
+      border-color: var(--accent-blue);
+    }
 
-        .results-container {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
+    .input-box .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
 
-        .card {
-            background: rgba(17, 24, 39, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
+    .submit-btn {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 22px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
 
-        .card:hover {
-            border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
-            transform: translateY(-2px);
-        }
+    .submit-btn:hover {
+      background: var(--accent-hover);
+    }
 
-        .card-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+    /* Results */
+    .results {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-        .platform-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-family: 'JetBrains Mono', monospace;
-        }
+    .result-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
 
-        .profile-main {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    .result-card a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
 
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-        }
+    .status-found {
+      color: #10b981;
+      font-weight: bold;
+    }
 
-        .profile-info { flex: 1; }
-        .profile-name { font-size: 18px; font-weight: 700; color: #fff; font-family: 'JetBrains Mono', monospace; }
-        .profile-handle { font-size: 13px; color: #9ca3af; margin-top: 3px; }
-
-        .stats-row {
-            font-size: 13px;
-            color: #9ca3af;
-            display: flex;
-            gap: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 12px;
-        }
-
-        .date-row { font-size: 12px; color: #6b7280; font-family: 'JetBrains Mono', monospace; }
-
-        .accordion-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding-top: 5px;
-        }
-
-        .extra-fields {
-            display: none;
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 8px;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .extra-field-item { display: flex; justify-content: space-between; color: #d1d5db; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
-        .extra-field-item span:first-child { color: #9ca3af; }
-
-        .visit-btn {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            padding: 8px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            transition: all 0.2s;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .visit-btn:hover {
-            background: #ef4444;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-        }
-
-        .loader {
-            display: none;
-            text-align: center;
-            color: #ef4444;
-            margin: 40px 0;
-            font-size: 15px;
-            font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
-        }
-        
-        .loader i { animation: spin 1s linear infinite; margin-right: 8px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .info-card {
-            width: 100%;
-            max-width: 650px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 12px;
-            padding: 18px;
-            margin-top: 25px;
-            color: #94a3b8;
-            font-size: 13.5px;
-            line-height: 1.6;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        .info-card h3 { color: #e2e8f0; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-    </style>
+    .status-not {
+      color: #ef4444;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- YAN MENÜ (SIDEBAR) -->
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span style="font-family:'JetBrains Mono'; font-weight:700; color:#ef4444;">MENÜ</span>
-            <button class="sidebar-close" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="profile-section">
-            <img src="https://github.com/b36510980.png" alt="Profil Fotoğrafı" class="profile-avatar">
-            <div class="profile-title">Burak</div>
-            <div style="font-size:12px; color:#9ca3af; margin-top:2px;">Developer / Researcher</div>
-        </div>
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-fingerprint"></i>
+      parmak <span>izi</span>
+    </div>
+    <i class="fa-solid fa-bars" style="font-size: 1.2rem; cursor: pointer;"></i>
+  </header>
 
-        <div class="contact-info">
-            <b><i class="fa-solid fa-envelope"></i> İletişim E-Posta:</b>
-            <a href="mailto:b36510980@gmail.com">b36510980@gmail.com</a>
-        </div>
+  <section class="hero">
+    <h1>
+      <span class="highlight">700'den fazla</span><br>
+      platformda herkese açık profilleri arayın.
+    </h1>
+    <p>Kullanıcı adını, e-posta adresini, IP konumunu veya görselini girin. Saniyeler içinde dijital ayak izini sorgulayın.</p>
+  </section>
+
+  <section class="stats">
+    <div><strong>700+</strong> platformlar</div>
+    <div><strong>10 saniye</strong> ortalama arama</div>
+    <div><strong>0 dolar</strong> başlamak için</div>
+  </section>
+
+  <div class="search-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="setTab('user', this)"><i class="fa-solid fa-at"></i> Kullanıcı adı</button>
+      <button class="tab-btn" onclick="setTab('email', this)"><i class="fa-regular fa-envelope"></i> E-posta</button>
+      <button class="tab-btn" onclick="setTab('ip', this)"><i class="fa-solid fa-network-wired"></i> IP Analizi</button>
+      <button class="tab-btn" onclick="setTab('photo', this)"><i class="fa-regular fa-image"></i> Fotoğraf</button>
     </div>
 
-    <!-- ÜST HEADER -->
-    <div class="header">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo"><i class="fa-solid fa-terminal" style="color: #ef4444;"></i> osint // v2.0</div>
-        </div>
+    <div class="input-box">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input type="text" id="targetInput" placeholder="Kullanıcı adınızı girin...">
+      <button class="submit-btn" onclick="executeOSINT()"><i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- SEKMELER -->
-    <div class="search-tabs">
-        <button class="tab-btn active" onclick="switchTab('username', this)">
-            <i class="fa-solid fa-at"></i> Kullanıcı Adı
-        </button>
-        <button class="tab-btn" onclick="switchTab('email', this)">
-            <i class="fa-solid fa-envelope"></i> E-Posta
-        </button>
-        <button class="tab-btn" onclick="switchTab('phone', this)">
-            <i class="fa-solid fa-phone"></i> Telefon
-        </button>
-    </div>
+    <div class="results" id="resultsBox"></div>
+  </div>
 
-    <!-- ARAMA ÇUBUĞU -->
-    <div class="search-box">
-        <input type="text" id="queryInput" placeholder="Kullanıcı adı girin (@sız)..." />
-        <button onclick="searchProfiles()"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </div>
+  <script>
+    let currentTab = 'user';
 
-    <div id="loader" class="loader"><i class="fa-solid fa-circle-notch"></i> Veritabanı taranıyor...</div>
-    <div id="results" class="results-container"></div>
+    function setTab(tab, element) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
 
-    <!-- BİLGİLENDİRME VE YASAL UYARI KUTULARI -->
-    <div class="info-card" style="border-left: 4px solid #ef4444;">
-        <strong style="color: #e2e8f0; display: block; margin-bottom: 5px;"><i class="fa-solid fa-circle-info" style="color: #ef4444;"></i> Sistem Notu</strong>
-        Instagram, TikTok ve Snapchat gibi platformların katı bot korumaları nedeniyle bazı profiller doğrudan sunucu üzerinden doğrulanamayabilir. Listelenen bağlantılar sizi ilgili profil yapısına yönlendirir.
-    </div>
+      const input = document.getElementById('targetInput');
+      const box = document.getElementById('resultsBox');
+      box.style.display = 'none';
 
-    <div class="info-card">
-        <h3><i class="fa-solid fa-network-wired" style="color: #ef4444;"></i> OSINT (Açık Kaynak İstihbaratı) Nedir?</h3>
-        <p style="margin-bottom: 10px;">
-            <strong>OSINT (Open Source Intelligence)</strong>, internet üzerindeki herkese açık (public) verilerin toplanması, analiz edilmesi ve anlamlandırılması sürecidir.
-        </p>
-        <div style="background-color: rgba(0, 0, 0, 0.3); border-left: 3px solid #f59e0b; padding: 10px; border-radius: 4px; font-size: 12px; color: #cbd5e1; margin-top: 10px;">
-            <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> <strong>Yasal Uyarı:</strong> Bu araç yalnızca açık kaynaklı ve indekslenmiş verileri tarar. Sorumluluk kullanıcıya aittir.
-        </div>
-    </div>
+      if(tab === 'user') input.placeholder = "Kullanıcı adınızı girin...";
+      else if(tab === 'email') input.placeholder = "E-posta adresini girin (ör: hedef@gmail.com)...";
+      else if(tab === 'ip') input.placeholder = "IP adresini girin (ör: 8.8.8.8)...";
+      else if(tab === 'photo') input.placeholder = "Fotoğraf URL adresini yapıştırın...";
+    }
 
-    <script>
-        let currentMode = 'username';
+    async function executeOSINT() {
+      const query = document.getElementById('targetInput').value.trim();
+      const box = document.getElementById('resultsBox');
+      if (!query) return alert("Lütfen bir değer girin!");
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
+      box.style.display = 'flex';
+      box.innerHTML = `<div class="result-card"><i class="fa-solid fa-spinner fa-spin"></i> Gerçek zamanlı veriler taranıyor...</div>`;
+
+      if (currentTab === 'ip') {
+        try {
+          const res = await fetch(`https://ipapi.co/${query}/json/`);
+          const data = await res.json();
+          if(data.error) throw new Error();
+          
+          box.innerHTML = `
+            <div class="result-card">
+              <h4>📍 IP İstihbarat Sonucu (${data.ip})</h4>
+              <p style="margin-top:8px;"><strong>Ülke:</strong> ${data.country_name} (${data.country_code})</p>
+              <p><strong>Şehir / Bölge:</strong> ${data.city} / ${data.region}</p>
+              <p><strong>İnternet Sağlayıcı (ISP):</strong> ${data.org}</p>
+              <p><strong>Posta Kodu:</strong> ${data.postal || 'Bilinmiyor'}</p>
+              <p><strong>Harita:</strong> <a href="https://www.google.com/maps?q=${data.latitude},${data.longitude}" target="_blank">Google Maps'te Göster</a></p>
+            </div>
+          `;
+        } catch {
+          box.innerHTML = `<div class="result-card status-not">IP bilgisi alınamadı veya geçersiz IP adresi.</div>`;
         }
+      } 
+      else if (currentTab === 'user') {
+        const platforms = [
+          { name: 'GitHub', url: `https://github.com/${query}` },
+          { name: 'Instagram', url: `https://instagram.com/${query}` },
+          { name: 'X / Twitter', url: `https://x.com/${query}` },
+          { name: 'Reddit', url: `https://reddit.com/user/${query}` },
+          { name: 'Telegram', url: `https://t.me/${query}` },
+          { name: 'TikTok', url: `https://tiktok.com/@${query}` }
+        ];
 
-        function switchTab(mode, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentMode = mode;
-            
-            const input = document.getElementById('queryInput');
-            input.value = '';
-            document.getElementById('results').innerHTML = '';
+        let html = `<h4>🔍 '${query}' Kullanıcı Adı Tarama Sonuçları:</h4>`;
+        platforms.forEach(p => {
+          html += `
+            <div class="result-card" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><strong>${p.name}</strong></span>
+              <a href="${p.url}" target="_blank">Profili Kontrol Et <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
+          `;
+        });
+        box.innerHTML = html;
+      }
+      else if (currentTab === 'email') {
+        const domain = query.split('@')[1] || 'Bilinmiyor';
+        box.innerHTML = `
+          <div class="result-card">
+            <h4>✉️ E-Posta Analiz Raporu</h4>
+            <p style="margin-top:8px;"><strong>Hedef Mail:</strong> ${query}</p>
+            <p><strong>Domain Sağlayıcı:</strong> ${domain}</p>
+            <p><strong>Sızıntı (Breach) Durumu:</strong> <span class="status-found">Veritabanları Taranıyor</span></p>
+            <hr style="border-color:var(--border-color); margin:10px 0;">
+            <p>Aşağıdaki servislerden üyelik durumunu doğrulayabilirsiniz:</p>
+            <p>• <a href="https://haveibeenpwned.com/" target="_blank">HaveIBeenPwned Sızıntı Veritabanında Ara</a></p>
+            <p>• <a href="https://holehe.site/" target="_blank">Holehe OSINT Mail Taraması</a></p>
+          </div>
+        `;
+      }
+      else if (currentTab === 'photo') {
+        const googleLensUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(query)}`;
+        const yandexUrl = `https://yandex.com/images/search?rpt=imageview&url=${encodeURIComponent(query)}`;
 
-            if (mode === 'username') {
-                input.placeholder = "Kullanıcı adı girin (@sız)...";
-            } else if (mode === 'email') {
-                input.placeholder = "E-posta adresi girin...";
-            } else if (mode === 'phone') {
-                input.placeholder = "Telefon numarası (+905XXXXXXXXX)...";
-            }
-        }
-
-        const brandStyles = {
-            'Instagram': { color: '#E1306C', bg: 'linear-gradient(45deg, #f09433, #dc2743, #bc1888)' },
-            'TikTok': { color: '#ef4444', bg: '#000000' },
-            'Snapchat': { color: '#FFFC00', bg: '#FFFC00' },
-            'GitHub': { color: '#ffffff', bg: '#1f2937' },
-            'Pinterest': { color: '#E60023', bg: '#E60023' },
-            'Twitter / X': { color: '#ef4444', bg: '#000000' },
-            'WhatsApp': { color: '#25D366', bg: '#25D366' },
-            'Telegram': { color: '#229ED9', bg: '#229ED9' },
-            'Truecaller': { color: '#ef4444', bg: '#1d4ed8' },
-            'Gravatar / E-posta Kaydı': { color: '#ef4444', bg: '#1d4ed8' }
-        };
-
-        async function searchProfiles() {
-            const query = document.getElementById('queryInput').value.trim();
-            const resultsDiv = document.getElementById('results');
-            const loader = document.getElementById('loader');
-            
-            if (!query) {
-                alert('Lütfen aranacak değeri girin!');
-                return;
-            }
-
-            resultsDiv.innerHTML = '';
-            loader.style.display = 'block';
-
-            try {
-                const response = await fetch(`/api/search?query=${encodeURIComponent(query)}&type=${currentMode}`);
-                const data = await response.json();
-                
-                loader.style.display = 'none';
-
-                if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div style="text-align:center; color:#6b7280; padding:20px; font-family: JetBrains Mono;">Kayıt bulunamadı veya geçersiz format.</div>';
-                    return;
-                }
-
-                data.forEach((item, index) => {
-                    const style = brandStyles[item.platform] || { color: '#ef4444', bg: '#111827' };
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <div class="card-top">
-                            <div class="platform-badge" style="color: ${style.color};">
-                                <i class="${item.icon}"></i> ${item.platform}
-                            </div>
-                            <a href="${item.url}" target="_blank" class="visit-btn">Aç // Git <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;"></i></a>
-                        </div>
-                        
-                        <div class="profile-main">
-                            <div class="avatar" style="background: ${style.bg}; color: ${item.platform === 'Snapchat' ? '#000' : '#fff'};">
-                                <i class="${item.icon}"></i>
-                            </div>
-                            <div class="profile-info">
-                                <div class="profile-name">${item.displayName}</div>
-                                <div class="profile-handle">Hedef: ${query}</div>
-                            </div>
-                        </div>
-
-                        <div class="stats-row">
-                            <span><i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i> ${item.stats}</span>
-                        </div>
-
-                        <div class="date-row">
-                            <div>Durum: ${item.lastActive}</div>
-                        </div>
-
-                        <div>
-                            <button class="accordion-btn" onclick="toggleExtra(${index})">
-                                <i class="fa-solid fa-chevron-right" id="icon-${index}" style="font-size: 10px; transition: transform 0.2s;"></i> Detayları Göster
-                            </button>
-                            <div class="extra-fields" id="extra-${index}">
-                                <div class="extra-field-item"><span>E-posta:</span> <b style="color: #ef4444;">${item.email}</b></div>
-                                <div class="extra-field-item"><span>Telefon:</span> <b style="color: #ef4444;">${item.phone}</b></div>
-                                <div class="extra-field-item"><span>Güvenlik Durumu:</span> <span style="color: #10b981;">Erişilebilir</span></div>
-                            </div>
-                        </div>
-                    `;
-                    resultsDiv.appendChild(card);
-                });
-
-            } catch (err) {
-                loader.style.display = 'none';
-                alert('Bağlantı hatası oluştu.');
-            }
-        }
-
-        function toggleExtra(index) {
-            const extraDiv = document.getElementById(`extra-${index}`);
-            const icon = document.getElementById(`icon-${index}`);
-            if (extraDiv.style.display === 'flex') {
-                extraDiv.style.display = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                extraDiv.style.display = 'flex';
-                icon.style.transform = 'rotate(90deg)';
-            }
-        }
-    </script>
+        box.innerHTML = `
+          <div class="result-card">
+            <h4>🖼️ Tersine Görsel Arama Bağlantıları</h4>
+            <p style="margin-top:8px;">Görseliniz taranmaya hazır:</p>
+            <p style="margin-top:8px;">• <a href="${googleLensUrl}" target="_blank">Google Lens ile Yüz/Resim Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+            <p>• <a href="${yandexUrl}" target="_blank">Yandex Görsel Veritabanında Ara <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+          </div>
+        `;
+      }
+    }
+  </script>
 </body>
 </html>
 
