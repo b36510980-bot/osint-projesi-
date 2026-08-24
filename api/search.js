@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
     Object.entries(platforms).map(async ([name, url]) => {
       try {
         const response = await fetch(url, { headers, redirect: 'follow' });
+        // Gerçek HTTP durum kodu kontrolü: 200 dönüyorsa hesap vardır
         const exists = response.status === 200;
         return { platform: name, url, exists };
       } catch (e) {
