@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
 
   const cleanMail = mail.trim().toLowerCase();
   const headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     "Accept": "application/json"
   };
 
@@ -18,7 +18,6 @@ module.exports = async (req, res) => {
   try {
     const spotifyRes = await fetch(`https://spclient.wg.spotify.com/signup/public/v1/account?validate=1&email=${encodeURIComponent(cleanMail)}`, { headers });
     const spotifyData = await spotifyRes.json();
-    // Spotify status 20 veya reason EMAIL_EXISTS ise mail sistemde kayıtlıdır
     const exists = spotifyData.status === 20 || spotifyData.reason === "EMAIL_EXISTS";
     results.push({ platform: "Spotify", exists: exists });
   } catch (e) {
@@ -40,4 +39,3 @@ module.exports = async (req, res) => {
     results: results
   });
 };
-
